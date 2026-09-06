@@ -131,6 +131,9 @@ updater:
     MiraOutposts: "FiveSOCE/Mira-Outposts"
     MiraRTP: "FiveSOCE/Mira-RTP"
     MiraTrades: "FiveSOCE/Mira-Trades"
+    MiraChatItems: "FiveSOCE/Mira-ChatItems"
+    MiraDuels: "FiveSOCE/Mira-Duels"
+    MiraJellylegs: "FiveSOCE/Mira-Jellylegs"
 
 
 # First-join starter workflow. Everything here is optional and server-configurable.

@@ -89,7 +89,18 @@ public final class CoreEssentialsPresentationService {
                 String current = managed.getProperty(key, "");
                 String legacySeed = legacySeedValue(key, rawDefault);
                 String brokenPrefixedSeed = brokenPrefixedSeedValue(key, rawDefault);
-                if ((current.equals(legacySeed) || current.equals(brokenPrefixedSeed)) && !current.equals(nextSeed)) {
+                String configuredPrefix = plugin.getConfig().getString("integrations.essentials.style.prefix",
+                        "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>");
+                String rawStyled = rawDefault
+                        .replace("<primary>", plugin.getConfig().getString("integrations.essentials.style.primary", "<gray>"))
+                        .replace("<secondary>", plugin.getConfig().getString("integrations.essentials.style.secondary", "<light_purple>"));
+                boolean untouchedOldPrefix = configuredPrefix != null
+                        && !configuredPrefix.isEmpty()
+                        && current.startsWith(configuredPrefix)
+                        && current.substring(configuredPrefix.length()).equals(rawStyled);
+
+                if ((current.equals(legacySeed) || current.equals(brokenPrefixedSeed) || untouchedOldPrefix)
+                        && !current.equals(nextSeed)) {
                     managed.setProperty(key, nextSeed);
                     managedChanged = true;
                 }

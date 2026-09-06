@@ -30,6 +30,7 @@ public final class MiraCorePlugin extends JavaPlugin {
     private CoreUpdateService updateService;
     private CoreRewardService rewardService;
     private CoreRewardGui rewardGui;
+    private CoreEssentialsPresentationService essentialsPresentation;
     private MiraCoreApiImpl api;
 
     @Override
@@ -52,6 +53,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         updateService = new CoreUpdateService(this, moduleRegistry);
         rewardService = new CoreRewardService(this, auditService);
         rewardGui = new CoreRewardGui(rewardService, messageService);
+        essentialsPresentation = new CoreEssentialsPresentationService(this);
 
         api = new MiraCoreApiImpl(getPluginMeta().getVersion(), messageService, serviceRegistry, cooldownService, moduleRegistry,
                 profileService, notificationService, auditService, paginationService, permissionDebugService, milestoneService,
@@ -98,6 +100,12 @@ public final class MiraCorePlugin extends JavaPlugin {
             getLogger().warning("A separate plugin named MOTD is installed. MiraCore now owns the server-list MOTD; remove the old MOTD JAR to avoid competing ping listeners.");
         }
 
+        getServer().getScheduler().runTask(this, () -> {
+            if (essentialsPresentation.sync(true)) {
+                getLogger().info("EssentialsX presentation bridge ready: " + essentialsPresentation.status());
+            }
+        });
+
         getLogger().info("MiraCore v" + api.version() + " enabled. Shared suite services registered.");
 
         if (getConfig().getBoolean("diagnostics.startup-check", true)) {
@@ -130,11 +138,13 @@ public final class MiraCorePlugin extends JavaPlugin {
     public MaintenanceService maintenance() { return maintenanceService; }
     public UpdateService updates() { return updateService; }
     public RewardService rewards() { return rewardService; }
+    public CoreEssentialsPresentationService essentialsPresentation() { return essentialsPresentation; }
     public void reloadCoreConfiguration() {
         reloadConfig();
         messageService.reload();
         if (maintenanceService != null) maintenanceService.reload();
         if (motdService != null) motdService.reload();
         if (rewardService != null) rewardService.reloadClaimCodes();
+        if (essentialsPresentation != null) essentialsPresentation.sync(true);
     }
 }

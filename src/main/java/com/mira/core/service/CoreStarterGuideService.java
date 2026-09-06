@@ -107,7 +107,7 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
                 ItemStack display = new ItemStack(icon);
                 ItemMeta meta = display.getItemMeta();
                 meta.displayName(LEGACY.deserialize(section.getString("name", id)));
-                List<Component> lore = section.getStringList("lore").stream().map(LEGACY::deserialize).toList();
+                List<Component> lore = section.getStringList("lore").stream().map(line -> (Component) LEGACY.deserialize(line)).toList();
                 if (!lore.isEmpty()) meta.lore(lore);
                 meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "guide_id"), PersistentDataType.STRING, id);
                 display.setItemMeta(meta);
@@ -153,7 +153,7 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
 
         List<String> configuredPages = section.getStringList("pages");
         if (configuredPages.isEmpty()) configuredPages = List.of("&7No guide content has been configured.");
-        meta.pages(configuredPages.stream().map(LEGACY::deserialize).toList());
+        meta.pages(configuredPages.stream().map(line -> (Component) LEGACY.deserialize(line)).toList());
 
         book.setItemMeta(meta);
         return book;

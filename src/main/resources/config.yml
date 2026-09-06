@@ -1,3 +1,33 @@
+# EssentialsX remains the command/functionality backend. MiraCore owns its player-facing message bundle.
+integrations:
+  essentials:
+    enabled: true
+
+    # MiraCore manages this EssentialsX locale and deploys messages_<locale>.properties.
+    locale: "en"
+
+    # When enabled, MiraCore keeps EssentialsX on the locale above and disables per-player locale
+    # so every player sees the same Mira-controlled command text.
+    enforce-locale: true
+
+    style:
+      # Applied to normal EssentialsX feedback messages when MiraCore first imports a message key.
+      apply-prefix: true
+      prefix: "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>"
+
+      # EssentialsX <primary>/<secondary> tags are rewritten into the Mira palette on first import.
+      primary: "<gray>"
+      secondary: "<light_purple>"
+
+      # These are message-format templates, not standalone feedback lines, so they should not receive a prefix.
+      no-prefix-keys:
+        - "action"
+        - "msgFormat"
+        - "mailFormat"
+        - "socialSpyMsgFormat"
+        - "socialSpyMsgFormatFrom"
+        - "socialSpyMsgFormatTo"
+
 # Prefix used by MiraCore chat output.
 prefix: "&5&lMira &8>> &r"
 

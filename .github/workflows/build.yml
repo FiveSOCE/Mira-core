@@ -61,5 +61,5 @@ jobs:
             gh release create "$TAG" "$JAR" \
               --target "${{ github.sha }}" \
               --title "MiraCore $TAG" \
-              --notes "Fixes broken EssentialsX text substitution such as /gms inserting the Mira prefix into gamemode placeholders. MiraCore now avoids globally prefixing reusable translation tokens, migrates previously generated corrupted values, and keeps Essentials text simplification/styling conservative and placeholder-safe."
+              --notes "Adds a configurable first-join starter workflow and permanent /guides library. Server owners can configure first-join console/player commands, which guides are physically given, GUI layout, guide metadata and all book pages. Mira defaults include Factions How To, Custom Enchants Guide and Events Guide."
           fi

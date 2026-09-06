@@ -1,10 +1,24 @@
+## v0.5.0 EssentialsX presentation ownership
+
+MiraCore can now own EssentialsX player-facing command text while EssentialsX remains the command and functionality backend.
+
+- Imports EssentialsX's current bundled `messages.properties`.
+- Creates the editable MiraCore master file `plugins/MiraCore/essentials-messages_<locale>.properties`.
+- Automatically adds newly introduced EssentialsX message keys on future upgrades without overwriting existing MiraCore edits.
+- Applies the configured Mira prefix and primary/secondary style when a message key is first imported.
+- Deploys the generated override to `plugins/Essentials/messages/messages_<locale>.properties`.
+- Can enforce a single EssentialsX locale and disable per-player locale for consistent server-wide presentation.
+- `/miracore essentials` shows bridge status.
+- `/miracore essentials sync` republishes the MiraCore message file and reloads EssentialsX.
+- MiraCore does not replace EssentialsX command executors, permissions, cooldowns, teleport logic, economy logic or other command behavior.
+
 # MiraCore
 
 MiraCore is the shared infrastructure and API layer for the Mira Paper server suite. It provides common messaging, cooldowns, service discovery, player profiles, notifications, audit logging, diagnostics and module health so individual Mira plugins do not duplicate the same foundation.
 
 ## Download
 
-[**Download MiraCore v0.4.1**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.4.1/MiraCore-0.4.1.jar)
+[**Download MiraCore v0.5.0**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.0/MiraCore-0.5.0.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 
@@ -84,7 +98,7 @@ MiraCore now replaces the old standalone MOTD plugin as the authoritative server
 
 ### Remove the old MOTD JAR
 
-After installing MiraCore v0.4.1, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
+After installing MiraCore v0.5.0, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
 
 ### Normal MOTD
 

@@ -61,5 +61,5 @@ jobs:
             gh release create "$TAG" "$JAR" \
               --target "${{ github.sha }}" \
               --title "MiraCore $TAG" \
-              --notes "Adds MiraCore-managed EssentialsX presentation ownership. EssentialsX keeps command execution, permissions and functionality, while MiraCore imports the current Essentials message bundle, centralizes it under plugins/MiraCore, applies Mira styling, deploys the generated locale override back to EssentialsX, and provides /miracore essentials [sync] for administration."
+              --notes "Simplifies MiraCore-managed EssentialsX help, usage, error and confirmation text into compact one-line responses while preserving dynamic values and Essentials command behavior. Existing auto-generated MiraCore message entries are migrated to the simplified defaults, while manually edited entries are preserved."
           fi

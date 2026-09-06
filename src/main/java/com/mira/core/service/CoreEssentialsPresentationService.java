@@ -75,9 +75,23 @@ public final class CoreEssentialsPresentationService {
 
             boolean managedChanged = false;
             for (String key : defaults.stringPropertyNames()) {
-                if (managed.containsKey(key)) continue;
-                managed.setProperty(key, seedValue(key, defaults.getProperty(key, "")));
-                managedChanged = true;
+                String rawDefault = defaults.getProperty(key, "");
+                String nextSeed = seedValue(key, rawDefault);
+
+                if (!managed.containsKey(key)) {
+                    managed.setProperty(key, nextSeed);
+                    managedChanged = true;
+                    continue;
+                }
+
+                // Upgrade only values that still exactly match MiraCore's old generated defaults.
+                // Anything manually edited by the server owner is preserved.
+                String current = managed.getProperty(key, "");
+                String legacySeed = legacySeedValue(key, rawDefault);
+                if (current.equals(legacySeed) && !current.equals(nextSeed)) {
+                    managed.setProperty(key, nextSeed);
+                    managedChanged = true;
+                }
             }
 
             Files.createDirectories(plugin.getDataFolder().toPath());
@@ -156,6 +170,15 @@ public final class CoreEssentialsPresentationService {
     }
 
     private String seedValue(String key, String value) {
+        String simplified = simplify(key, value);
+        return styleAndPrefix(key, simplified);
+    }
+
+    private String legacySeedValue(String key, String value) {
+        return styleAndPrefix(key, value);
+    }
+
+    private String styleAndPrefix(String key, String value) {
         String styled = value;
         styled = styled.replace("<primary>", plugin.getConfig().getString(
                 "integrations.essentials.style.primary", "<gray>"));
@@ -168,6 +191,79 @@ public final class CoreEssentialsPresentationService {
         String prefix = plugin.getConfig().getString("integrations.essentials.style.prefix",
                 "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>");
         return (prefix == null ? "" : prefix) + styled;
+    }
+
+    private String simplify(String key, String value) {
+        if (!plugin.getConfig().getBoolean("integrations.essentials.simplify.enabled", true)) return value;
+
+        return switch (key) {
+            // /help and command-help output: compact and readable.
+            case "commandHelpLine1" -> "<secondary>/{0}";
+            case "commandHelpLine2" -> "<gray>{0}";
+            case "commandHelpLine3" -> "<gray>Usage:";
+            case "commandHelpLine4" -> "<gray>Aliases: <white>{0}";
+            case "commandHelpLineUsage" -> "<secondary>{0}";
+            case "helpFrom" -> "<gray>Commands from <secondary>{0}<gray>:";
+            case "helpLine" -> "<secondary>/{0} <dark_gray>- <gray>{1}";
+            case "helpMatching" -> "<gray>Matches for <secondary>{0}<gray>:";
+            case "helpPlugin" -> "<secondary>{0} <dark_gray>- <gray>/help {1}";
+            case "helpConsole" -> "<gray>Use <secondary>?<gray> in console.";
+
+            // Common command failures should be one line, not Essentials prose.
+            case "commandCooldown" -> "<red>Wait <white>{0}<red> before using that again.";
+            case "cooldownWithMessage" -> "<red>Cooldown: <white>{0}";
+            case "commandDisabled" -> "<red>That command is disabled.";
+            case "commandNotLoaded" -> "<red>That command is unavailable.";
+            case "consoleCannotUseCommand" -> "<red>Players only.";
+            case "errorCallingCommand" -> "<red>Could not run /{0}.";
+            case "errorWithMessage" -> "<red>{0}";
+            case "commandFailed" -> "<red>Command failed: <white>{0}";
+            case "commandHelpFailedForPlugin" -> "<red>Help unavailable for {0}.";
+            case "destinationNotSet" -> "<red>No destination set.";
+            case "foreverAlone" -> "<red>No one to reply to.";
+
+            // Common confirmations.
+            case "backUsageMsg" -> "<gray>Returning...";
+            case "dontMoveMessage" -> "<gray>Teleporting in <secondary>{0}<gray>. Don't move.";
+            case "backAfterDeath" -> "<gray>Use <secondary>/back<gray> to return.";
+            case "balance" -> "<gray>Balance: <secondary>{0}";
+            case "balanceOther" -> "<gray>{0}: <secondary>{1}";
+            case "deleteHome" -> "<gray>Removed home <secondary>{0}<gray>.";
+            case "deleteWarp" -> "<gray>Removed warp <secondary>{0}<gray>.";
+            case "deleteKit" -> "<gray>Removed kit <secondary>{0}<gray>.";
+            case "bedSet" -> "<gray>Bed spawn set.";
+            case "backupStarted" -> "<gray>Backup started.";
+            case "backupFinished" -> "<gray>Backup finished.";
+            case "essentialsReload" -> "<gray>Essentials reloaded.";
+
+            default -> simplifyDescription(key, value);
+        };
+    }
+
+    private String simplifyDescription(String key, String value) {
+        // Per-usage descriptions are redundant in help output. Keep them compact.
+        if (key.matches(".*CommandUsage\\d+Description")) {
+            String compact = value == null ? "" : value.trim();
+            if (compact.endsWith(".")) compact = compact.substring(0, compact.length() - 1);
+            compact = compact
+                    .replace("the specified player", "player")
+                    .replace("the target player", "player")
+                    .replace("specified player", "player")
+                    .replace("if specified", "")
+                    .replace("with an optional reason", "")
+                    .replace("with the given name", "")
+                    .replaceAll("\\s{2,}", " ")
+                    .trim();
+            return "<gray>" + compact;
+        }
+
+        if (key.endsWith("CommandDescription")) {
+            String compact = value == null ? "" : value.trim();
+            if (compact.endsWith(".")) compact = compact.substring(0, compact.length() - 1);
+            return compact;
+        }
+
+        return value;
     }
 
     private boolean shouldPrefix(String key, String value) {

@@ -88,7 +88,8 @@ public final class CoreEssentialsPresentationService {
                 // Anything manually edited by the server owner is preserved.
                 String current = managed.getProperty(key, "");
                 String legacySeed = legacySeedValue(key, rawDefault);
-                if (current.equals(legacySeed) && !current.equals(nextSeed)) {
+                String brokenPrefixedSeed = brokenPrefixedSeedValue(key, rawDefault);
+                if ((current.equals(legacySeed) || current.equals(brokenPrefixedSeed)) && !current.equals(nextSeed)) {
                     managed.setProperty(key, nextSeed);
                     managedChanged = true;
                 }
@@ -176,6 +177,30 @@ public final class CoreEssentialsPresentationService {
 
     private String legacySeedValue(String key, String value) {
         return styleAndPrefix(key, value);
+    }
+
+    private String brokenPrefixedSeedValue(String key, String value) {
+        String styled = simplify(key, value)
+                .replace("<primary>", plugin.getConfig().getString("integrations.essentials.style.primary", "<gray>"))
+                .replace("<secondary>", plugin.getConfig().getString("integrations.essentials.style.secondary", "<light_purple>"));
+
+        if (!oldShouldPrefix(key, styled)) return styled;
+        String prefix = plugin.getConfig().getString("integrations.essentials.style.prefix",
+                "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>");
+        return (prefix == null ? "" : prefix) + styled;
+    }
+
+    private boolean oldShouldPrefix(String key, String value) {
+        if (value == null || value.isBlank()) return false;
+        String lower = key.toLowerCase(Locale.ROOT);
+        if (lower.contains("commandusage") || lower.contains("commanddescription")) return false;
+        if (lower.endsWith("format") || lower.contains("formatnew")) return false;
+
+        List<String> excluded = plugin.getConfig().getStringList("integrations.essentials.style.no-prefix-keys");
+        for (String raw : excluded) {
+            if (key.equalsIgnoreCase(raw)) return false;
+        }
+        return true;
     }
 
     private String styleAndPrefix(String key, String value) {

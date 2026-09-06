@@ -131,3 +131,177 @@ updater:
     MiraOutposts: "FiveSOCE/Mira-Outposts"
     MiraRTP: "FiveSOCE/Mira-RTP"
     MiraTrades: "FiveSOCE/Mira-Trades"
+
+
+# First-join starter workflow. Everything here is optional and server-configurable.
+starter:
+  enabled: true
+  first-join-only: true
+  # Run as console after a true first join.
+  console-commands: []
+  # Run as the joining player. Mira defaults to claiming the starter kit.
+  player-commands:
+    - "kit starter"
+  # Physical guide books given on first join.
+  give-guides:
+    - "factions"
+    - "enchants"
+    - "events"
+  message: "&dWelcome! &7Your starter kit and Mira guide books are ready. Use &f/guides &7any time to reopen them."
+
+# Permanent player-facing reference library.
+guides:
+  enabled: true
+  title: "&5&lMira Guides"
+  rows: 3
+  entries:
+    factions:
+      slot: 11
+      icon: WRITTEN_BOOK
+      name: "&dFactions How To"
+      author: "Mira"
+      lore:
+        - "&7Claims, power, faction money,"
+        - "&7chat and the commands you need."
+      pages:
+        - |
+          &5&lMira Factions
+
+          &0Create:
+          &5/f create <name>
+
+          &0Join:
+          &5/f join <name>
+
+          &0Leave:
+          &5/f leave
+
+          &0Faction info:
+          &5/f info
+        - |
+          &5&lClaims
+
+          &0Claim your chunk:
+          &5/f claim
+
+          &0Unclaim:
+          &5/f unclaim
+
+          &0Claim map:
+          &5/f map
+
+          &0Chunk borders:
+          &5/f seechunk
+        - |
+          &5&lFaction Home
+
+          &0Set home:
+          &5/f sethome
+
+          &0Teleport home:
+          &5/f home
+
+          &0Faction warps:
+          &5/f warps
+          &5/f warp <name>
+        - |
+          &5&lChat & Money
+
+          &0Faction chat:
+          &5/f chat faction
+
+          &0Public chat:
+          &5/f chat public
+
+          &0Faction bank:
+          &5/f money balance
+          &5/f money deposit <amount>
+          &5/f money withdraw <amount>
+        - |
+          &5&lPower
+
+          &0View power:
+          &5/f power
+
+          &0Faction status:
+          &5/f info
+
+          &0FTop:
+          &5/f top
+
+          &0Your claims are limited by faction power. Losing too much power can make your faction raidable.
+    enchants:
+      slot: 13
+      icon: ENCHANTED_BOOK
+      name: "&dCustom Enchants Guide"
+      author: "Mira"
+      lore:
+        - "&7Runes, applying enchants,"
+        - "&7equipment and backpacks."
+      pages:
+        - |
+          &5&lCustom Enchants
+
+          &0Mira custom enchants are applied using Runes.
+
+          &0Each Rune shows its enchant, level and compatible equipment.
+        - |
+          &5&lApplying Runes
+
+          &0Use the Rune on compatible gear to apply the enchant.
+
+          &0Higher enchant levels provide stronger effects where supported.
+
+          &0A Rune will not apply to incompatible equipment.
+        - |
+          &5&lBackpacks
+
+          &0Backpack is a chestplate-only custom enchant.
+
+          &0Wear the enchanted chestplate and use:
+          &5/backpack
+
+          &0Each chestplate links to its own persistent backpack.
+        - |
+          &5&lUseful Commands
+
+          &5/backpack
+          &0Open the backpack linked to your worn chestplate.
+
+          &0Use the server enchant menus/commands shown to players for the current Rune selection and details.
+    events:
+      slot: 15
+      icon: RECOVERY_COMPASS
+      name: "&dEvents Guide"
+      author: "Mira"
+      lore:
+        - "&7Airdrops and Pinata events."
+      pages:
+        - |
+          &5&lServer Events
+
+          &0Mira runs special events with public announcements when they begin.
+
+          &0The two main events covered here are Airdrops and Pinata.
+        - |
+          &5&lAirdrops
+
+          &0Airdrops scatter loot crates around the active event region.
+
+          &0Crates fall from the sky and land randomly, so there are no fixed spots to camp.
+
+          &0Right-click a landed crate to claim its loot.
+        - |
+          &5&lAirdrops
+
+          &0The event remains active until every crate has been found or staff cancels it.
+
+          &0Watch chat for the inbound warning and event announcements.
+        - |
+          &5&lPinata
+
+          &0Pinata is a public reward event.
+
+          &0Join in when the event is announced and attack the active Pinata to participate in the reward drops.
+
+          &0Watch chat for event-specific instructions.

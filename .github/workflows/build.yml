@@ -1,9 +1,10 @@
 name: Build
 
-# CI verifies MiraCore against Java 21 and Paper 1.21.11.
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'release/**'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -29,6 +30,14 @@ jobs:
         with:
           gradle-version: '8.10'
 
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(sed -n 's/^version = "\([^"]*\)"/\1/p' build.gradle.kts | head -n1)
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Test and build
         run: gradle clean test build --stacktrace
 
@@ -36,19 +45,21 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: MiraCore-0.4.1
-          path: build/libs/MiraCore-0.4.1.jar
+          name: MiraCore-${{ steps.version.outputs.version }}
+          path: build/libs/MiraCore-${{ steps.version.outputs.version }}.jar
           if-no-files-found: error
 
-      - name: Publish v0.4.1 release if missing
-        if: github.event_name != 'pull_request'
+      - name: Publish release branch
+        if: success() && startsWith(github.ref, 'refs/heads/release/')
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          if ! gh release view v0.4.1 >/dev/null 2>&1; then
-            gh release create v0.4.1 \
-              build/libs/MiraCore-0.4.1.jar \
+          TAG="v$VERSION"
+          JAR="build/libs/MiraCore-$VERSION.jar"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" "$JAR" \
               --target "${{ github.sha }}" \
-              --title "MiraCore v0.4.1" \
-              --notes "MiraCore now owns the normal server-list MOTD and maintenance override, adds configurable maintenance countdown warnings and persisted reasons, kicks every connected player when maintenance activates, allows only bypass-permission users to rejoin, supports optional join MOTD/max-player/icon handling, and hardens scheduled maintenance expiry."
+              --title "MiraCore $TAG" \
+              --notes "Adds MiraCore-managed EssentialsX presentation ownership. EssentialsX keeps command execution, permissions and functionality, while MiraCore imports the current Essentials message bundle, centralizes it under plugins/MiraCore, applies Mira styling, deploys the generated locale override back to EssentialsX, and provides /miracore essentials [sync] for administration."
           fi

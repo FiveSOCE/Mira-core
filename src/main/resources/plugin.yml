@@ -4,11 +4,12 @@ main: com.mira.core.MiraCorePlugin
 api-version: '1.21'
 authors: [FiveS]
 description: Shared infrastructure and API services for the Mira plugin ecosystem.
+softdepend: [Essentials]
 
 commands:
   miracore:
     description: MiraCore suite dashboard, diagnostics and administration.
-    usage: /miracore [status|test|why|audit|profiles|maintenance|updates|reload|help]
+    usage: /miracore [status|test|why|audit|profiles|maintenance|updates|essentials|reload|help]
     aliases: [mcore]
     permission: miracore.admin
   rewards:

@@ -20,6 +20,10 @@ commands:
     description: Redeem a global Mira claim code into the reward queue.
     usage: /claim <code>
     permission: miracore.rewards
+  guides:
+    description: Open permanent player-facing server guides.
+    usage: /guides
+    permission: miracore.guides
 
 permissions:
   miracore.admin:
@@ -30,4 +34,7 @@ permissions:
     default: op
   miracore.rewards:
     description: Allows viewing queued rewards and using claim codes.
+    default: true
+  miracore.guides:
+    description: Allows opening the permanent guides menu.
     default: true

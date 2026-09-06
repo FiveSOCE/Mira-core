@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public final class MiraCoreCommand implements CommandExecutor, TabCompleter {
-    private static final List<String> SUBCOMMANDS = List.of("status", "test", "reload", "why", "audit", "profiles", "maintenance", "updates", "help");
+    private static final List<String> SUBCOMMANDS = List.of("status", "test", "reload", "why", "audit", "profiles", "maintenance", "updates", "essentials", "help");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("MM-dd HH:mm").withZone(ZoneId.systemDefault());
     private static final DateTimeFormatter MAINTENANCE_TIME =
             DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a z").withZone(ZoneId.of("Australia/Brisbane"));
@@ -38,6 +38,7 @@ public final class MiraCoreCommand implements CommandExecutor, TabCompleter {
             case "profiles" -> profiles(sender);
             case "maintenance" -> maintenance(sender, args);
             case "updates" -> updates(sender, args);
+            case "essentials" -> essentials(sender, args);
             case "help" -> help(sender);
             default -> help(sender);
         };
@@ -224,6 +225,31 @@ public final class MiraCoreCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private boolean essentials(CommandSender sender, String[] args) {
+        var bridge = plugin.essentialsPresentation();
+        if (bridge == null) {
+            plugin.messages().send(sender, Component.text("Essentials presentation bridge is unavailable.", NamedTextColor.RED));
+            return true;
+        }
+
+        boolean sync = args.length >= 2 && args[1].equalsIgnoreCase("sync");
+        if (sync) {
+            boolean ok = bridge.sync(true);
+            plugin.messages().send(sender, Component.text(
+                    ok ? "EssentialsX messages synchronized through MiraCore." : "EssentialsX message sync failed: " + bridge.status(),
+                    ok ? NamedTextColor.GREEN : NamedTextColor.RED));
+            return true;
+        }
+
+        plugin.messages().send(sender, Component.text("EssentialsX presentation: " + bridge.status(), NamedTextColor.LIGHT_PURPLE));
+        if (bridge.managedFile() != null) {
+            plugin.messages().send(sender, Component.text("Managed file: " + bridge.managedFile().getFileName(), NamedTextColor.GRAY));
+        }
+        plugin.messages().send(sender, Component.text("Managed messages: " + bridge.managedMessages(), NamedTextColor.GRAY));
+        plugin.messages().send(sender, Component.text("Use /miracore essentials sync after editing the MiraCore message file.", NamedTextColor.DARK_GRAY));
+        return true;
+    }
+
     private boolean updates(CommandSender sender, String[] args) {
         boolean refresh = args.length >= 2 && args[1].equalsIgnoreCase("refresh");
         List<UpdateService.UpdateStatus> cached = plugin.updates().cached();
@@ -292,6 +318,7 @@ public final class MiraCoreCommand implements CommandExecutor, TabCompleter {
         plugin.messages().send(sender, Component.text("/miracore maintenance <status|on|force|off|schedule|cancel>", NamedTextColor.AQUA)
                 .append(Component.text(" - Maintenance countdown, gate and schedules", NamedTextColor.GRAY)));
         plugin.messages().send(sender, Component.text("/miracore updates [refresh]", NamedTextColor.AQUA).append(Component.text(" - Report installed Mira modules against GitHub releases", NamedTextColor.GRAY)));
+        plugin.messages().send(sender, Component.text("/miracore essentials [sync]", NamedTextColor.AQUA).append(Component.text(" - Inspect/resync Mira-managed EssentialsX messages", NamedTextColor.GRAY)));
         plugin.messages().send(sender, Component.text("/miracore reload", NamedTextColor.AQUA).append(Component.text(" - Reload Core config", NamedTextColor.GRAY)));
         return true;
     }
@@ -322,6 +349,9 @@ public final class MiraCoreCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("updates")) {
             return "refresh".startsWith(args[1].toLowerCase(Locale.ROOT)) ? List.of("refresh") : List.of();
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("essentials")) {
+            return "sync".startsWith(args[1].toLowerCase(Locale.ROOT)) ? List.of("sync") : List.of();
         }
         if ((args.length == 3 || args.length == 4) && args[0].equalsIgnoreCase("maintenance") && args[1].equalsIgnoreCase("schedule")) {
             return args.length == 3 ? List.of("10m", "30m", "1h") : List.of("30m", "1h", "2h");

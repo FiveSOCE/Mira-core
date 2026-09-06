@@ -148,7 +148,7 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
         meta.author(LEGACY.deserialize(author == null ? "Mira" : author));
         meta.displayName(LEGACY.deserialize(name == null ? id : name));
 
-        List<Component> lore = section.getStringList("lore").stream().map(LEGACY::deserialize).toList();
+        List<Component> lore = section.getStringList("lore").stream().map(line -> (Component) LEGACY.deserialize(line)).toList();
         if (!lore.isEmpty()) meta.lore(lore);
 
         List<String> configuredPages = section.getStringList("pages");

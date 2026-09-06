@@ -16,8 +16,13 @@ integrations:
 
     style:
       # Applied to normal EssentialsX feedback messages when MiraCore first imports a message key.
-      apply-prefix: true
+      apply-prefix: false
       prefix: "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>"
+
+      # Only keys explicitly listed here may receive the Mira prefix.
+      # Essentials reuses many translation values as arguments inside other messages,
+      # so global prefixing can corrupt output such as /gms.
+      prefix-keys: []
 
       # EssentialsX <primary>/<secondary> tags are rewritten into the Mira palette on first import.
       primary: "<gray>"

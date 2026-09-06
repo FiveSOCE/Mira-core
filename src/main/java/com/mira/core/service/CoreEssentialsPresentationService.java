@@ -185,8 +185,14 @@ public final class CoreEssentialsPresentationService {
         styled = styled.replace("<secondary>", plugin.getConfig().getString(
                 "integrations.essentials.style.secondary", "<light_purple>"));
 
-        if (!plugin.getConfig().getBoolean("integrations.essentials.style.apply-prefix", true)) return styled;
+        if (!plugin.getConfig().getBoolean("integrations.essentials.style.apply-prefix", false)) return styled;
         if (!shouldPrefix(key, styled)) return styled;
+
+        // Essentials translation values are frequently nested into {0}/{1} placeholders.
+        // Prefix only explicit standalone message keys. Prefixing atomic tokens such as
+        // "survival", "enabled", "flying", etc. corrupts parent messages like gameMode.
+        List<String> allowed = plugin.getConfig().getStringList("integrations.essentials.style.prefix-keys");
+        if (allowed.stream().noneMatch(raw -> raw.equalsIgnoreCase(key))) return styled;
 
         String prefix = plugin.getConfig().getString("integrations.essentials.style.prefix",
                 "<dark_purple><bold>Mira</bold> <dark_gray>» <reset>");
@@ -228,6 +234,11 @@ public final class CoreEssentialsPresentationService {
             case "backAfterDeath" -> "<gray>Use <secondary>/back<gray> to return.";
             case "balance" -> "<gray>Balance: <secondary>{0}";
             case "balanceOther" -> "<gray>{0}: <secondary>{1}";
+            case "gameMode" -> "<gray>Gamemode: <secondary>{0}<gray> for <secondary>{1}<gray>.";
+            case "gameModeInvalid" -> "<red>Choose a valid player/gamemode.";
+            case "flyMode" -> "<gray>Flight <secondary>{0}<gray> for <secondary>{1}<gray>.";
+            case "msgEnabled" -> "<gray>Messages enabled.";
+            case "msgDisabled" -> "<gray>Messages disabled.";
             case "deleteHome" -> "<gray>Removed home <secondary>{0}<gray>.";
             case "deleteWarp" -> "<gray>Removed warp <secondary>{0}<gray>.";
             case "deleteKit" -> "<gray>Removed kit <secondary>{0}<gray>.";
@@ -272,6 +283,11 @@ public final class CoreEssentialsPresentationService {
         String lower = key.toLowerCase(Locale.ROOT);
         if (lower.contains("commandusage") || lower.contains("commanddescription")) return false;
         if (lower.endsWith("format") || lower.contains("formatnew")) return false;
+
+        // Single-token translations are commonly injected into other translated messages.
+        // Never decorate them as standalone chat output.
+        String plain = value.replaceAll("<[^>]+>", "").trim();
+        if (!plain.contains(" ") && !plain.contains("\\n")) return false;
 
         List<String> excluded = plugin.getConfig().getStringList("integrations.essentials.style.no-prefix-keys");
         for (String raw : excluded) {

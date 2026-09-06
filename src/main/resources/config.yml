@@ -10,6 +10,10 @@ integrations:
     # so every player sees the same Mira-controlled command text.
     enforce-locale: true
 
+    # Keeps EssentialsX help, usage, errors and confirmations short and Mira-like.
+    simplify:
+      enabled: true
+
     style:
       # Applied to normal EssentialsX feedback messages when MiraCore first imports a message key.
       apply-prefix: true

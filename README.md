@@ -158,3 +158,12 @@ Examples:
 Maintenance reason, scheduled start and scheduled end are persisted in `maintenance.yml`. Admin-facing scheduled times are displayed in `Australia/Brisbane` time.
 
 Expired maintenance windows are discarded safely rather than briefly activating/kicking players during a late reload.
+
+## Starter workflow and /guides
+
+MiraCore 0.5.3 adds a config-driven first-join starter workflow plus a permanent `/guides` library. Server owners can configure first-join player/console commands, which guide books are physically given, GUI layout, book metadata, and every page of guide text from `config.yml`.
+
+The default Mira setup gives the starter kit command plus three guides: Factions How To, Custom Enchants Guide, and Events Guide.
+
+Release: https://github.com/FiveSOCE/Mira-core/releases/tag/v0.5.3
+SHA-256: `b16b67a46e0c9e2860bfc770d05f63031fd2620bb9617d18ff4a6d69fa901601`

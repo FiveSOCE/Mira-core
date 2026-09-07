@@ -38,3 +38,7 @@ permissions:
   miracore.guides:
     description: Allows opening the permanent guides menu.
     default: true
+
+  miracore.cooldowns.bypass:
+    description: Bypasses MiraCore Ender Pearl and Enchanted Golden Apple cooldowns.
+    default: op

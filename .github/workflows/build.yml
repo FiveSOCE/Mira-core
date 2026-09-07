@@ -29,6 +29,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if ! gh release view v0.5.4 >/dev/null 2>&1; then
+          if gh release view v0.5.4 >/dev/null 2>&1; then
+            gh release upload v0.5.4 build/libs/MiraCore-0.5.4.jar --clobber
+          else
             gh release create v0.5.4 build/libs/MiraCore-0.5.4.jar --target "${{ github.sha }}" --title "MiraCore v0.5.4" --notes "Adds global Factions consumable cooldowns: 3 seconds for Ender Pearls and 5 minutes for Enchanted Golden Apples, with configurable bypass."
           fi

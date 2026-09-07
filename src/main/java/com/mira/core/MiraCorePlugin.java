@@ -6,6 +6,7 @@ import com.mira.core.listener.CoreMaintenanceListener;
 import com.mira.core.listener.CoreMotdListener;
 import com.mira.core.listener.CoreProfileListener;
 import com.mira.core.listener.CoreRewardGuiListener;
+import com.mira.core.listener.CoreConsumableCooldownListener;
 import com.mira.core.gui.CoreRewardGui;
 import com.mira.core.service.*;
 import org.bukkit.command.PluginCommand;
@@ -82,6 +83,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CoreMaintenanceListener(maintenanceService), this);
         getServer().getPluginManager().registerEvents(new CoreMotdListener(motdService), this);
         getServer().getPluginManager().registerEvents(new CoreRewardGuiListener(rewardService, messageService, rewardGui), this);
+        getServer().getPluginManager().registerEvents(new CoreConsumableCooldownListener(this), this);
         getServer().getPluginManager().registerEvents(starterGuideService, this);
         getServer().getScheduler().runTaskTimer(this, maintenanceService::tick, 20L, 20L);
         for (Player player : getServer().getOnlinePlayers()) profileService.touch(player.getUniqueId(), player.getName(), true);

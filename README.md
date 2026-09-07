@@ -9,21 +9,21 @@ Both are configurable under `item-cooldowns`. Active cooldowns use Paper's nativ
 
 `miracore.cooldowns.bypass` bypasses both cooldowns and defaults to OP.
 
-## v0.5.4 Essentials placeholder safety
+## v0.5.2 Essentials placeholder safety
 
 - Fixes `/gms` and similar commands where reusable translation tokens such as `survival`, `creative`, `enabled`, or `flying` could receive the Mira prefix and then be injected into parent messages.
 - Global Essentials message prefixing is now disabled by default. Prefixing is opt-in through explicit `prefix-keys` only.
 - Previously untouched MiraCore-generated prefixed values are migrated automatically during Essentials sync.
 - Placeholder-heavy and nested Essentials messages remain centrally managed and simplified without corrupting their arguments.
 
-## v0.5.4 simplified EssentialsX responses
+## v0.5.2 simplified EssentialsX responses
 
 - Simplifies `/help` headers, command help, usage lines, cooldowns, disabled-command notices, errors and common confirmations.
 - Preserves dynamic values such as player names, balances, destinations and cooldown durations.
 - Automatically migrates untouched MiraCore-generated Essentials defaults to the new compact wording.
 - Preserves any Essentials messages you manually edited in the MiraCore-managed properties file.
 
-## v0.5.4 EssentialsX presentation ownership
+## v0.5.2 EssentialsX presentation ownership
 
 MiraCore can now own EssentialsX player-facing command text while EssentialsX remains the command and functionality backend.
 

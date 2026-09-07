@@ -308,3 +308,15 @@ guides:
           &0Join in when the event is announced and attack the active Pinata to participate in the reward drops.
 
           &0Watch chat for event-specific instructions.
+
+
+# Global Factions combat consumable cooldowns.
+item-cooldowns:
+  ender-pearl:
+    enabled: true
+    ticks: 60 # 3 seconds
+    bypass-permission: "miracore.cooldowns.bypass"
+  enchanted-golden-apple:
+    enabled: true
+    ticks: 6000 # 5 minutes
+    bypass-permission: "miracore.cooldowns.bypass"

@@ -1,18 +1,29 @@
-## v0.5.2 Essentials placeholder safety
+## v0.5.4 Factions consumable cooldowns
+
+MiraCore now owns two global combat-consumable cooldowns:
+
+- **Ender Pearl:** 60 ticks / **3 seconds**
+- **Enchanted Golden Apple:** 6000 ticks / **5 minutes**
+
+Both are configurable under `item-cooldowns`. Active cooldowns use Paper's native material cooldown overlay, and blocked uses show the remaining time on the action bar.
+
+`miracore.cooldowns.bypass` bypasses both cooldowns and defaults to OP.
+
+## v0.5.4 Essentials placeholder safety
 
 - Fixes `/gms` and similar commands where reusable translation tokens such as `survival`, `creative`, `enabled`, or `flying` could receive the Mira prefix and then be injected into parent messages.
 - Global Essentials message prefixing is now disabled by default. Prefixing is opt-in through explicit `prefix-keys` only.
 - Previously untouched MiraCore-generated prefixed values are migrated automatically during Essentials sync.
 - Placeholder-heavy and nested Essentials messages remain centrally managed and simplified without corrupting their arguments.
 
-## v0.5.2 simplified EssentialsX responses
+## v0.5.4 simplified EssentialsX responses
 
 - Simplifies `/help` headers, command help, usage lines, cooldowns, disabled-command notices, errors and common confirmations.
 - Preserves dynamic values such as player names, balances, destinations and cooldown durations.
 - Automatically migrates untouched MiraCore-generated Essentials defaults to the new compact wording.
 - Preserves any Essentials messages you manually edited in the MiraCore-managed properties file.
 
-## v0.5.2 EssentialsX presentation ownership
+## v0.5.4 EssentialsX presentation ownership
 
 MiraCore can now own EssentialsX player-facing command text while EssentialsX remains the command and functionality backend.
 
@@ -32,7 +43,7 @@ MiraCore is the shared infrastructure and API layer for the Mira Paper server su
 
 ## Download
 
-[**Download MiraCore v0.5.2**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.2/MiraCore-0.5.2.jar)
+[**Download MiraCore v0.5.4**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.4/MiraCore-0.5.4.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 
@@ -112,7 +123,7 @@ MiraCore now replaces the old standalone MOTD plugin as the authoritative server
 
 ### Remove the old MOTD JAR
 
-After installing MiraCore v0.5.2, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
+After installing MiraCore v0.5.4, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
 
 ### Normal MOTD
 

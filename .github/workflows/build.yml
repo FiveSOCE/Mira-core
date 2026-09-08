@@ -21,16 +21,16 @@ jobs:
         run: gradle clean test build --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: MiraCore-0.5.4
-          path: build/libs/MiraCore-0.5.4.jar
+          name: MiraCore-0.5.5
+          path: build/libs/MiraCore-0.5.5.jar
           if-no-files-found: error
       - name: Publish release
         if: success() && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v0.5.4 >/dev/null 2>&1; then
-            gh release upload v0.5.4 build/libs/MiraCore-0.5.4.jar --clobber
+          if gh release view v0.5.5 >/dev/null 2>&1; then
+            gh release upload v0.5.5 build/libs/MiraCore-0.5.5.jar --clobber
           else
-            gh release create v0.5.4 build/libs/MiraCore-0.5.4.jar --target "${{ github.sha }}" --title "MiraCore v0.5.4" --notes "Adds global Factions consumable cooldowns: 3 seconds for Ender Pearls and 5 minutes for Enchanted Golden Apples, with configurable bypass."
+            gh release create v0.5.5 build/libs/MiraCore-0.5.5.jar --target "${{ github.sha }}" --title "MiraCore v0.5.5" --notes "Makes MiraCore the sole join-message owner, formats joins with LuckPerms rank prefix, and grants the configured starting rank access to the starter kit and guides."
           fi

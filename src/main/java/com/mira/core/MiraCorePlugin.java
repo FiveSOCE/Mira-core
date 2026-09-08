@@ -33,6 +33,7 @@ public final class MiraCorePlugin extends JavaPlugin {
     private CoreRewardGui rewardGui;
     private CoreEssentialsPresentationService essentialsPresentation;
     private CoreStarterGuideService starterGuideService;
+    private CorePlayerJoinService playerJoinService;
     private MiraCoreApiImpl api;
 
     @Override
@@ -57,6 +58,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         rewardGui = new CoreRewardGui(rewardService, messageService);
         essentialsPresentation = new CoreEssentialsPresentationService(this);
         starterGuideService = new CoreStarterGuideService(this, messageService);
+        playerJoinService = new CorePlayerJoinService(this);
 
         api = new MiraCoreApiImpl(getPluginMeta().getVersion(), messageService, serviceRegistry, cooldownService, moduleRegistry,
                 profileService, notificationService, auditService, paginationService, permissionDebugService, milestoneService,
@@ -85,6 +87,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CoreRewardGuiListener(rewardService, messageService, rewardGui), this);
         getServer().getPluginManager().registerEvents(new CoreConsumableCooldownListener(this), this);
         getServer().getPluginManager().registerEvents(starterGuideService, this);
+        getServer().getPluginManager().registerEvents(playerJoinService, this);
         getServer().getScheduler().runTaskTimer(this, maintenanceService::tick, 20L, 20L);
         for (Player player : getServer().getOnlinePlayers()) profileService.touch(player.getUniqueId(), player.getName(), true);
 
@@ -110,6 +113,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         }
 
         getServer().getScheduler().runTask(this, () -> {
+            playerJoinService.syncStartingGroupAccess();
             if (essentialsPresentation.sync(true)) {
                 getLogger().info("EssentialsX presentation bridge ready: " + essentialsPresentation.status());
             }
@@ -155,5 +159,6 @@ public final class MiraCorePlugin extends JavaPlugin {
         if (motdService != null) motdService.reload();
         if (rewardService != null) rewardService.reloadClaimCodes();
         if (essentialsPresentation != null) essentialsPresentation.sync(true);
+        if (playerJoinService != null) playerJoinService.syncStartingGroupAccess();
     }
 }

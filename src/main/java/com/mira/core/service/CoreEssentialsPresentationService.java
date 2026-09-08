@@ -157,6 +157,8 @@ public final class CoreEssentialsPresentationService {
         String original = Files.readString(config, StandardCharsets.UTF_8);
         String updated = replaceYamlScalar(original, "locale", locale);
         updated = replaceYamlScalar(updated, "per-player-locale", "false");
+        // MiraCore owns the server's join broadcast to avoid duplicate Essentials/Paper messages.
+        updated = replaceYamlScalar(updated, "custom-join-message", "'none'");
 
         if (updated.equals(original)) return false;
         Files.writeString(config, updated, StandardCharsets.UTF_8);

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.mira.core"
-version = "0.5.4"
+version = "0.5.5"
 
 repositories {
     mavenCentral()
@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("net.luckperms:api:5.4")
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

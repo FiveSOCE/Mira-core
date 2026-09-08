@@ -1,4 +1,14 @@
-## v0.5.4 Factions consumable cooldowns
+## v0.5.5 starter access and join ownership
+
+- MiraCore now owns the server's single public join message.
+- EssentialsX `custom-join-message` is forced to `none` while the MiraCore Essentials bridge is enabled, preventing duplicate Essentials/Core join lines.
+- Join format defaults to `%rank% %player% Has Joined.`.
+- `%rank%` uses the player's LuckPerms prefix when available, otherwise falls back to `[Primary Group]`.
+- The configured starting LuckPerms group defaults to `default`.
+- MiraCore ensures that group has `Mirakits.starter` and `miracore.guides`.
+- First-time players therefore have permission to claim `/kit starter`, receive their physical starter guide books, and can reopen them with `/guides`.
+
+## v0.5.5 Factions consumable cooldowns
 
 MiraCore now owns two global combat-consumable cooldowns:
 
@@ -43,7 +53,7 @@ MiraCore is the shared infrastructure and API layer for the Mira Paper server su
 
 ## Download
 
-[**Download MiraCore v0.5.4**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.4/MiraCore-0.5.4.jar)
+[**Download MiraCore v0.5.5**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.5/MiraCore-0.5.5.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 
@@ -123,7 +133,7 @@ MiraCore now replaces the old standalone MOTD plugin as the authoritative server
 
 ### Remove the old MOTD JAR
 
-After installing MiraCore v0.5.4, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
+After installing MiraCore v0.5.5, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
 
 ### Normal MOTD
 

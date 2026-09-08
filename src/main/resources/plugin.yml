@@ -4,7 +4,7 @@ main: com.mira.core.MiraCorePlugin
 api-version: '1.21'
 authors: [FiveS]
 description: Shared infrastructure and API services for the Mira plugin ecosystem.
-softdepend: [Essentials]
+softdepend: [Essentials, LuckPerms]
 
 commands:
   miracore:

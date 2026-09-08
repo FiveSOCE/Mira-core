@@ -20,7 +20,7 @@ jobs:
         with:
           gradle-version: '8.10'
       - name: Verify Paper 1.21.11 compatibility
-        run: gradle clean test compileJava -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 --stacktrace
+        run: gradle clean test compileJava -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 -PbytecodeJavaVersion=21 --stacktrace
 
   compatibility-26-2:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
         with:
           gradle-version: '9.1.0'
       - name: Verify Paper 26.2 compatibility
-        run: gradle clean test compileJava -PpaperApiVersion=26.2.build.121-stable -PcompileJavaVersion=25 --stacktrace
+        run: gradle clean test compileJava -PpaperApiVersion=26.2.build.121-stable -PcompileJavaVersion=25 -PbytecodeJavaVersion=25 --stacktrace
 
   build:
     needs: [compatibility-1-21-11, compatibility-26-2]
@@ -49,7 +49,7 @@ jobs:
         with:
           gradle-version: '8.10'
       - name: Build baseline-compatible JAR
-        run: gradle clean test build -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 --stacktrace
+        run: gradle clean test build -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 -PbytecodeJavaVersion=21 --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: MiraCore-0.5.6

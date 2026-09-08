@@ -40,6 +40,11 @@ integrations:
 # Prefix used by MiraCore chat output.
 prefix: "&5&lMira &8>> &r"
 
+# MiraCore owns the one public join line.
+join-message:
+  enabled: true
+  format: "%rank% &f%player% Has Joined."
+
 # Runs a compact self-check shortly after startup and writes the result to console.
 diagnostics:
   startup-check: true
@@ -140,6 +145,12 @@ updater:
 starter:
   enabled: true
   first-join-only: true
+  # LuckPerms group new players begin in.
+  starting-group: "default"
+  # MiraCore ensures these are attached to the starting group.
+  starting-group-permissions:
+    - "Mirakits.starter"
+    - "miracore.guides"
   # Run as console after a true first join.
   console-commands: []
   # Run as the joining player. Mira defaults to claiming the starter kit.

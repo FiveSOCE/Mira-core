@@ -53,7 +53,7 @@ MiraCore is the shared infrastructure and API layer for the Mira Paper server su
 
 ## Download
 
-[**Download MiraCore v0.5.5**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.5/MiraCore-0.5.5.jar)
+[**Download MiraCore v0.5.5**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.6/MiraCore-0.5.6.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 

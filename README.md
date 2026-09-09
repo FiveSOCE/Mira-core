@@ -1,3 +1,9 @@
+## v0.5.8 join message deduplication
+
+- The dedicated rank-formatted join message now suppresses the legacy MOTD join/welcome path.
+- Preserved older configs with `motd.join.enabled: true` can no longer produce a second join-style line.
+- Expected result: only `[RANK] Player Has Joined.` is shown while `join-message.enabled: true`.
+
 ## v0.5.5 starter access and join ownership
 
 - MiraCore now owns the server's single public join message.
@@ -53,7 +59,7 @@ MiraCore is the shared infrastructure and API layer for the Mira Paper server su
 
 ## Download
 
-[**Download MiraCore v0.5.7**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.7/MiraCore-0.5.7.jar)
+[**Download MiraCore v0.5.8**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.8/MiraCore-0.5.8.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 

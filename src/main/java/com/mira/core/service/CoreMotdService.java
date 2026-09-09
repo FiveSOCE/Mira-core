@@ -70,6 +70,10 @@ public final class CoreMotdService {
     }
 
     public List<Component> joinMessages() {
+        // The dedicated join-message service owns player joins. Never emit the legacy
+        // MOTD join/welcome line at the same time, even if an older preserved config
+        // still has motd.join.enabled=true.
+        if (plugin.getConfig().getBoolean("join-message.enabled", true)) return List.of();
         if (!plugin.getConfig().getBoolean("motd.join.enabled", false)) return List.of();
         return plugin.getConfig().getStringList("motd.join.messages").stream()
                 .map(this::component)

@@ -1,3 +1,13 @@
+# MiraCore
+
+## Download
+
+**Latest compatibility release: v0.5.8**
+
+[**Download MiraCore-0.5.8.jar**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.8/MiraCore-0.5.8.jar)
+
+[View all releases](https://github.com/FiveSOCE/Mira-core/releases)
+
 ## v0.5.8 join message deduplication
 
 - The dedicated rank-formatted join message now suppresses the legacy MOTD join/welcome path.
@@ -56,12 +66,6 @@ MiraCore can now own EssentialsX player-facing command text while EssentialsX re
 # MiraCore
 
 MiraCore is the shared infrastructure and API layer for the Mira Paper server suite. It provides common messaging, cooldowns, service discovery, player profiles, notifications, audit logging, diagnostics and module health so individual Mira plugins do not duplicate the same foundation.
-
-## Download
-
-[**Download MiraCore v0.5.8**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.8/MiraCore-0.5.8.jar)
-
-[View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 
 ## Requirements / Dependencies
 

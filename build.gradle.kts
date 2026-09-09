@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.mira.core"
-version = "0.5.7"
+version = "0.5.8"
 
 repositories {
     mavenCentral()

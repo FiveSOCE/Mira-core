@@ -157,8 +157,11 @@ public final class CoreEssentialsPresentationService {
         String original = Files.readString(config, StandardCharsets.UTF_8);
         String updated = replaceYamlScalar(original, "locale", locale);
         updated = replaceYamlScalar(updated, "per-player-locale", "false");
-        // MiraCore owns the server's join broadcast to avoid duplicate Essentials/Paper messages.
-        updated = replaceYamlScalar(updated, "custom-join-message", "'none'");
+        // MiraCore owns the server's join broadcast. EssentialsX uses "none" to fall back to
+        // Minecraft's default join message; an empty string is required to suppress it entirely.
+        updated = replaceYamlScalar(updated, "custom-join-message", "''");
+        // Suppress the separate renamed-player join path as well.
+        updated = replaceYamlScalar(updated, "custom-new-username-message", "''");
 
         if (updated.equals(original)) return false;
         Files.writeString(config, updated, StandardCharsets.UTF_8);

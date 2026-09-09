@@ -52,16 +52,16 @@ jobs:
         run: gradle clean test build -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 -PbytecodeJavaVersion=21 --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: MiraCore-0.5.7
-          path: build/libs/MiraCore-0.5.7.jar
+          name: MiraCore-0.5.8
+          path: build/libs/MiraCore-0.5.8.jar
           if-no-files-found: error
       - name: Publish release
         if: success() && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v0.5.7 >/dev/null 2>&1; then
-            gh release upload v0.5.7 build/libs/MiraCore-0.5.7.jar --clobber
+          if gh release view v0.5.8 >/dev/null 2>&1; then
+            gh release upload v0.5.8 build/libs/MiraCore-0.5.8.jar --clobber
           else
-            gh release create v0.5.7 build/libs/MiraCore-0.5.7.jar --target "${{ github.sha }}" --title "MiraCore v0.5.7" --notes "Fixes duplicate join broadcasts by fully suppressing EssentialsX join and renamed-username join messages while MiraCore owns the public join line. Compatibility remains Paper 1.21.11 through 26.2."
+            gh release create v0.5.8 build/libs/MiraCore-0.5.8.jar --target "${{ github.sha }}" --title "MiraCore v0.5.8" --notes "Prevents preserved legacy MOTD join/welcome messages from duplicating MiraCore's dedicated rank-formatted join line. Compatibility remains Paper 1.21.11 through 26.2."
           fi

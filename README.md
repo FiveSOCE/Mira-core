@@ -1,7 +1,7 @@
 ## v0.5.5 starter access and join ownership
 
 - MiraCore now owns the server's single public join message.
-- EssentialsX `custom-join-message` is forced to `none` while the MiraCore Essentials bridge is enabled, preventing duplicate Essentials/Core join lines.
+- EssentialsX join output is forced to an empty string (including the renamed-username join path), fully suppressing duplicate Essentials/Core join lines.
 - Join format defaults to `%rank% %player% Has Joined.`.
 - `%rank%` uses the player's LuckPerms prefix when available, otherwise falls back to `[Primary Group]`.
 - The configured starting LuckPerms group defaults to `default`.
@@ -53,7 +53,7 @@ MiraCore is the shared infrastructure and API layer for the Mira Paper server su
 
 ## Download
 
-[**Download MiraCore v0.5.5**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.6/MiraCore-0.5.6.jar)
+[**Download MiraCore v0.5.7**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.7/MiraCore-0.5.7.jar)
 
 [View All Releases](https://github.com/FiveSOCE/Mira-core/releases)
 

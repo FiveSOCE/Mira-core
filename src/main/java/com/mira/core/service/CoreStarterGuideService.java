@@ -15,16 +15,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class CoreStarterGuideService implements Listener, CommandExecutor {
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
@@ -32,13 +35,12 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
     private final MiraCorePlugin plugin;
     private final MessageService messages;
     private final NamespacedKey starterGivenKey;
-    private final NamespacedKey guideIdKey;
+    private final Map<UUID, GuideMenu> openMenus = new HashMap<>();
 
     public CoreStarterGuideService(MiraCorePlugin plugin, MessageService messages) {
         this.plugin = plugin;
         this.messages = messages;
         this.starterGivenKey = new NamespacedKey(plugin, "starter_given");
-        this.guideIdKey = new NamespacedKey(plugin, "guide_id");
     }
 
     @EventHandler
@@ -94,10 +96,9 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
     public void openGuides(Player player) {
         int rows = Math.max(1, Math.min(6, plugin.getConfig().getInt("guides.rows", 3)));
         String title = plugin.getConfig().getString("guides.title", "&5&lMira Guides");
-        GuidesHolder holder = new GuidesHolder();
-        Inventory inventory = Bukkit.createInventory(holder, rows * 9,
+        Inventory inventory = Bukkit.createInventory(null, rows * 9,
                 LEGACY.deserialize(title == null ? "&5&lMira Guides" : title));
-        holder.bind(inventory);
+        Map<Integer, String> slots = new HashMap<>();
 
         ConfigurationSection entries = plugin.getConfig().getConfigurationSection("guides.entries");
         if (entries != null) {
@@ -115,26 +116,27 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
                 List<Component> lore = section.getStringList("lore").stream()
                         .map(line -> (Component) LEGACY.deserialize(line)).toList();
                 if (!lore.isEmpty()) meta.lore(lore);
-                meta.getPersistentDataContainer().set(guideIdKey, PersistentDataType.STRING, id);
                 display.setItemMeta(meta);
                 inventory.setItem(slot, display);
+                slots.put(slot, id);
             }
         }
+
+        openMenus.put(player.getUniqueId(), new GuideMenu(inventory, Map.copyOf(slots)));
         player.openInventory(inventory);
     }
 
     @EventHandler
     public void onGuideClick(InventoryClickEvent event) {
-        Inventory top = event.getView().getTopInventory();
-        if (!(top.getHolder() instanceof GuidesHolder)) return;
-        event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (event.getRawSlot() < 0 || event.getRawSlot() >= top.getSize()) return;
+        GuideMenu menu = openMenus.get(player.getUniqueId());
+        if (menu == null || event.getView().getTopInventory() != menu.inventory()) return;
 
-        ItemStack clicked = top.getItem(event.getRawSlot());
-        if (clicked == null || clicked.getType().isAir() || !clicked.hasItemMeta()) return;
-        String id = clicked.getItemMeta().getPersistentDataContainer().get(guideIdKey, PersistentDataType.STRING);
-        if (id == null || id.isBlank()) return;
+        event.setCancelled(true);
+        int rawSlot = event.getRawSlot();
+        if (rawSlot < 0 || rawSlot >= menu.inventory().getSize()) return;
+        String id = menu.slots().get(rawSlot);
+        if (id == null) return;
 
         ItemStack book = guideBook(id);
         if (book == null) {
@@ -142,10 +144,18 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
             return;
         }
 
+        openMenus.remove(player.getUniqueId());
         player.closeInventory();
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) player.openBook(book);
-        });
+        }, 1L);
+    }
+
+    @EventHandler
+    public void onGuideClose(InventoryCloseEvent event) {
+        if (!(event.getPlayer() instanceof Player player)) return;
+        GuideMenu menu = openMenus.get(player.getUniqueId());
+        if (menu != null && event.getInventory() == menu.inventory()) openMenus.remove(player.getUniqueId());
     }
 
     private ItemStack guideBook(String id) {
@@ -185,17 +195,5 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
         return trimmed.startsWith("/") ? trimmed.substring(1) : trimmed;
     }
 
-    private static final class GuidesHolder implements InventoryHolder {
-        private Inventory inventory;
-
-        private void bind(Inventory inventory) {
-            this.inventory = inventory;
-        }
-
-        @Override
-        public @NotNull Inventory getInventory() {
-            if (inventory == null) throw new IllegalStateException("Guide inventory has not been bound yet");
-            return inventory;
-        }
-    }
+    private record GuideMenu(Inventory inventory, Map<Integer, String> slots) { }
 }

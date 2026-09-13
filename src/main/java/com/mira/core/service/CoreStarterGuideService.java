@@ -32,11 +32,13 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
     private final MiraCorePlugin plugin;
     private final MessageService messages;
     private final NamespacedKey starterGivenKey;
+    private final NamespacedKey guideIdKey;
 
     public CoreStarterGuideService(MiraCorePlugin plugin, MessageService messages) {
         this.plugin = plugin;
         this.messages = messages;
         this.starterGivenKey = new NamespacedKey(plugin, "starter_given");
+        this.guideIdKey = new NamespacedKey(plugin, "guide_id");
     }
 
     @EventHandler
@@ -92,7 +94,10 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
     public void openGuides(Player player) {
         int rows = Math.max(1, Math.min(6, plugin.getConfig().getInt("guides.rows", 3)));
         String title = plugin.getConfig().getString("guides.title", "&5&lMira Guides");
-        Inventory inventory = Bukkit.createInventory(new GuidesHolder(), rows * 9, LEGACY.deserialize(title == null ? "&5&lMira Guides" : title));
+        GuidesHolder holder = new GuidesHolder();
+        Inventory inventory = Bukkit.createInventory(holder, rows * 9,
+                LEGACY.deserialize(title == null ? "&5&lMira Guides" : title));
+        holder.bind(inventory);
 
         ConfigurationSection entries = plugin.getConfig().getConfigurationSection("guides.entries");
         if (entries != null) {
@@ -107,9 +112,10 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
                 ItemStack display = new ItemStack(icon);
                 ItemMeta meta = display.getItemMeta();
                 meta.displayName(LEGACY.deserialize(section.getString("name", id)));
-                List<Component> lore = section.getStringList("lore").stream().map(line -> (Component) LEGACY.deserialize(line)).toList();
+                List<Component> lore = section.getStringList("lore").stream()
+                        .map(line -> (Component) LEGACY.deserialize(line)).toList();
                 if (!lore.isEmpty()) meta.lore(lore);
-                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "guide_id"), PersistentDataType.STRING, id);
+                meta.getPersistentDataContainer().set(guideIdKey, PersistentDataType.STRING, id);
                 display.setItemMeta(meta);
                 inventory.setItem(slot, display);
             }
@@ -119,20 +125,27 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
 
     @EventHandler
     public void onGuideClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof GuidesHolder)) return;
+        Inventory top = event.getView().getTopInventory();
+        if (!(top.getHolder() instanceof GuidesHolder)) return;
         event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (event.getRawSlot() < 0 || event.getRawSlot() >= top.getSize()) return;
 
-        ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || !clicked.hasItemMeta()) return;
-        String id = clicked.getItemMeta().getPersistentDataContainer()
-                .get(new NamespacedKey(plugin, "guide_id"), PersistentDataType.STRING);
-        if (id == null) return;
+        ItemStack clicked = top.getItem(event.getRawSlot());
+        if (clicked == null || clicked.getType().isAir() || !clicked.hasItemMeta()) return;
+        String id = clicked.getItemMeta().getPersistentDataContainer().get(guideIdKey, PersistentDataType.STRING);
+        if (id == null || id.isBlank()) return;
 
         ItemStack book = guideBook(id);
-        if (book == null) return;
+        if (book == null) {
+            messages.send(player, "&cThat guide could not be loaded. Please tell staff the guide ID was &f" + id + "&c.");
+            return;
+        }
+
         player.closeInventory();
-        Bukkit.getScheduler().runTask(plugin, () -> player.openBook(book));
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (player.isOnline()) player.openBook(book);
+        });
     }
 
     private ItemStack guideBook(String id) {
@@ -148,7 +161,8 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
         meta.author(LEGACY.deserialize(author == null ? "Mira" : author));
         meta.displayName(LEGACY.deserialize(name == null ? id : name));
 
-        List<Component> lore = section.getStringList("lore").stream().map(line -> (Component) LEGACY.deserialize(line)).toList();
+        List<Component> lore = section.getStringList("lore").stream()
+                .map(line -> (Component) LEGACY.deserialize(line)).toList();
         if (!lore.isEmpty()) meta.lore(lore);
 
         List<String> configuredPages = section.getStringList("pages");
@@ -171,7 +185,17 @@ public final class CoreStarterGuideService implements Listener, CommandExecutor 
         return trimmed.startsWith("/") ? trimmed.substring(1) : trimmed;
     }
 
-    private record GuidesHolder() implements InventoryHolder {
-        @Override public Inventory getInventory() { return null; }
+    private static final class GuidesHolder implements InventoryHolder {
+        private Inventory inventory;
+
+        private void bind(Inventory inventory) {
+            this.inventory = inventory;
+        }
+
+        @Override
+        public @NotNull Inventory getInventory() {
+            if (inventory == null) throw new IllegalStateException("Guide inventory has not been bound yet");
+            return inventory;
+        }
     }
 }

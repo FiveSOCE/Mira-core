@@ -52,16 +52,16 @@ jobs:
         run: gradle clean test build -PpaperApiVersion=1.21.11-R0.1-SNAPSHOT -PcompileJavaVersion=21 -PbytecodeJavaVersion=21 --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: MiraCore-0.5.9
-          path: build/libs/MiraCore-0.5.9.jar
+          name: MiraCore-0.6.0
+          path: build/libs/MiraCore-0.6.0.jar
           if-no-files-found: error
       - name: Publish release
         if: success() && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v0.5.9 >/dev/null 2>&1; then
-            gh release upload v0.5.9 build/libs/MiraCore-0.5.9.jar --clobber
+          if gh release view v0.6.0 >/dev/null 2>&1; then
+            gh release upload v0.6.0 build/libs/MiraCore-0.6.0.jar --clobber
           else
-            gh release create v0.5.9 build/libs/MiraCore-0.5.9.jar --target "${{ github.sha }}" --title "MiraCore v0.5.9" --notes "Fixes /guides GUI clicks by using a properly bound inventory holder and top-inventory slot handling, so Factions, Custom Enchants and Events books open reliably. Compatibility remains Paper 1.21.11 through 26.2."
+            gh release create v0.6.0 build/libs/MiraCore-0.6.0.jar --target "${{ github.sha }}" --title "MiraCore v0.6.0" --notes "Moves /fix hand and /fix all into MiraCore with paid repairs, permissions and a 5-hour /fix all cooldown. /fix hand costs $15,000; /fix all costs $5,000 per damaged item. Also replaces the /guides click path with tracked menu instances and direct slot mapping so guide selections no longer depend on Bukkit inventory-holder behavior."
           fi

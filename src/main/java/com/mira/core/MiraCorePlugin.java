@@ -33,6 +33,7 @@ public final class MiraCorePlugin extends JavaPlugin {
     private CoreRewardGui rewardGui;
     private CoreEssentialsPresentationService essentialsPresentation;
     private CoreStarterGuideService starterGuideService;
+    private CoreFixService fixService;
     private CorePlayerJoinService playerJoinService;
     private MiraCoreApiImpl api;
 
@@ -58,6 +59,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         rewardGui = new CoreRewardGui(rewardService, messageService);
         essentialsPresentation = new CoreEssentialsPresentationService(this);
         starterGuideService = new CoreStarterGuideService(this, messageService);
+        fixService = new CoreFixService(this, messageService);
         playerJoinService = new CorePlayerJoinService(this);
 
         api = new MiraCoreApiImpl(getPluginMeta().getVersion(), messageService, serviceRegistry, cooldownService, moduleRegistry,
@@ -87,6 +89,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CoreRewardGuiListener(rewardService, messageService, rewardGui), this);
         getServer().getPluginManager().registerEvents(new CoreConsumableCooldownListener(this), this);
         getServer().getPluginManager().registerEvents(starterGuideService, this);
+        getServer().getPluginManager().registerEvents(fixService, this);
         getServer().getPluginManager().registerEvents(playerJoinService, this);
         getServer().getScheduler().runTaskTimer(this, maintenanceService::tick, 20L, 20L);
         for (Player player : getServer().getOnlinePlayers()) profileService.touch(player.getUniqueId(), player.getName(), true);
@@ -107,6 +110,10 @@ public final class MiraCorePlugin extends JavaPlugin {
         PluginCommand guidesCommand = getCommand("guides");
         if (guidesCommand == null) throw new IllegalStateException("guides command is missing from plugin.yml");
         guidesCommand.setExecutor(starterGuideService);
+
+        PluginCommand fixCommand = getCommand("fix");
+        if (fixCommand == null) throw new IllegalStateException("fix command is missing from plugin.yml");
+        fixCommand.setExecutor(fixService);
 
         if (getServer().getPluginManager().getPlugin("MOTD") != null) {
             getLogger().warning("A separate plugin named MOTD is installed. MiraCore now owns the server-list MOTD; remove the old MOTD JAR to avoid competing ping listeners.");

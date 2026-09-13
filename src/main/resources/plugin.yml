@@ -24,6 +24,9 @@ commands:
     description: Open permanent player-facing server guides.
     usage: /guides
     permission: miracore.guides
+  fix:
+    description: Repair the held item or all damaged inventory items through MiraCore.
+    usage: /fix <hand|all>
 
 permissions:
   miracore.admin:
@@ -38,7 +41,15 @@ permissions:
   miracore.guides:
     description: Allows opening the permanent guides menu.
     default: true
-
+  miracore.fix.hand:
+    description: Allows paid /fix hand repairs.
+    default: op
+  miracore.fix.all:
+    description: Allows paid /fix all repairs.
+    default: op
+  miracore.fix.cooldown.bypass:
+    description: Bypasses the /fix all cooldown.
+    default: op
   miracore.cooldowns.bypass:
     description: Bypasses MiraCore Ender Pearl and Enchanted Golden Apple cooldowns.
     default: op

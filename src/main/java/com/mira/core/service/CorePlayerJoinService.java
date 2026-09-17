@@ -20,6 +20,7 @@ import java.util.Locale;
 
 public final class CorePlayerJoinService implements Listener {
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
+    private static final String LOADER_SYNTHETIC_METADATA = "miraloaders.synthetic";
 
     private final MiraCorePlugin plugin;
     private final LuckPerms luckPerms;
@@ -71,15 +72,20 @@ public final class CorePlayerJoinService implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (player.hasMetadata(LOADER_SYNTHETIC_METADATA)) {
+            event.joinMessage(null);
+            return;
+        }
+
         if (!plugin.getConfig().getBoolean("join-message.enabled", true)) return;
 
-        // MiraCore is the sole join-message owner.
+        // MiraCore is the sole public join-message owner.
         event.joinMessage(null);
 
-        Player player = event.getPlayer();
         Component line = LEGACY.deserialize(normalizeLegacy(render(player)));
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (player.isOnline()) Bukkit.broadcast(line);
+            if (player.isOnline() && !player.hasMetadata(LOADER_SYNTHETIC_METADATA)) Bukkit.broadcast(line);
         });
     }
 

@@ -1,200 +1,179 @@
 # MiraCore
 
-## Download
+Shared infrastructure and presentation authority for the Mira Paper server suite.
 
-**Latest compatibility release: v0.5.8**
+MiraCore provides common messaging, cooldowns, service discovery, player profiles, notifications, audit history, diagnostics, maintenance controls, rewards, starter guides and shared presentation services so individual Mira plugins do not need to duplicate the same foundation.
 
-[**Download MiraCore-0.5.8.jar**](https://github.com/FiveSOCE/Mira-core/releases/download/v0.5.8/MiraCore-0.5.8.jar)
+## Current Release
 
-[View all releases](https://github.com/FiveSOCE/Mira-core/releases)
+**v0.6.0** — compatible with Paper/Minecraft **1.21.11 through 26.2** using Java 21 bytecode.
 
-## v0.5.8 join message deduplication
+[View releases](https://github.com/FiveSOCE/Mira-core/releases)
 
-- The dedicated rank-formatted join message now suppresses the legacy MOTD join/welcome path.
-- Preserved older configs with `motd.join.enabled: true` can no longer produce a second join-style line.
-- Expected result: only `[RANK] Player Has Joined.` is shown while `join-message.enabled: true`.
+## Requirements
 
-## v0.5.5 starter access and join ownership
-
-- MiraCore now owns the server's single public join message.
-- EssentialsX join output is forced to an empty string (including the renamed-username join path), fully suppressing duplicate Essentials/Core join lines.
-- Join format defaults to `%rank% %player% Has Joined.`.
-- `%rank%` uses the player's LuckPerms prefix when available, otherwise falls back to `[Primary Group]`.
-- The configured starting LuckPerms group defaults to `default`.
-- MiraCore ensures that group has `Mirakits.starter` and `miracore.guides`.
-- First-time players therefore have permission to claim `/kit starter`, receive their physical starter guide books, and can reopen them with `/guides`.
-
-## v0.5.5 Factions consumable cooldowns
-
-MiraCore now owns two global combat-consumable cooldowns:
-
-- **Ender Pearl:** 60 ticks / **3 seconds**
-- **Enchanted Golden Apple:** 6000 ticks / **5 minutes**
-
-Both are configurable under `item-cooldowns`. Active cooldowns use Paper's native material cooldown overlay, and blocked uses show the remaining time on the action bar.
-
-`miracore.cooldowns.bypass` bypasses both cooldowns and defaults to OP.
-
-## v0.5.2 Essentials placeholder safety
-
-- Fixes `/gms` and similar commands where reusable translation tokens such as `survival`, `creative`, `enabled`, or `flying` could receive the Mira prefix and then be injected into parent messages.
-- Global Essentials message prefixing is now disabled by default. Prefixing is opt-in through explicit `prefix-keys` only.
-- Previously untouched MiraCore-generated prefixed values are migrated automatically during Essentials sync.
-- Placeholder-heavy and nested Essentials messages remain centrally managed and simplified without corrupting their arguments.
-
-## v0.5.2 simplified EssentialsX responses
-
-- Simplifies `/help` headers, command help, usage lines, cooldowns, disabled-command notices, errors and common confirmations.
-- Preserves dynamic values such as player names, balances, destinations and cooldown durations.
-- Automatically migrates untouched MiraCore-generated Essentials defaults to the new compact wording.
-- Preserves any Essentials messages you manually edited in the MiraCore-managed properties file.
-
-## v0.5.2 EssentialsX presentation ownership
-
-MiraCore can now own EssentialsX player-facing command text while EssentialsX remains the command and functionality backend.
-
-- Imports EssentialsX's current bundled `messages.properties`.
-- Creates the editable MiraCore master file `plugins/MiraCore/essentials-messages_<locale>.properties`.
-- Automatically adds newly introduced EssentialsX message keys on future upgrades without overwriting existing MiraCore edits.
-- Applies the configured Mira prefix and primary/secondary style when a message key is first imported.
-- Deploys the generated override to `plugins/Essentials/messages/messages_<locale>.properties`.
-- Can enforce a single EssentialsX locale and disable per-player locale for consistent server-wide presentation.
-- `/miracore essentials` shows bridge status.
-- `/miracore essentials sync` republishes the MiraCore message file and reloads EssentialsX.
-- MiraCore does not replace EssentialsX command executors, permissions, cooldowns, teleport logic, economy logic or other command behavior.
-
-# MiraCore
-
-MiraCore is the shared infrastructure and API layer for the Mira Paper server suite. It provides common messaging, cooldowns, service discovery, player profiles, notifications, audit logging, diagnostics and module health so individual Mira plugins do not duplicate the same foundation.
-
-## Requirements / Dependencies
-
-- Paper 1.21.11
+- Paper 1.21.11 through 26.2
 - Java 21
-- No third-party dependencies
+- LuckPerms optional/recommended for rank-aware join formatting and managed permission grants
+- EssentialsX optional integration for centrally managed command presentation
 
-## How MiraCore Works
+## Core Services
 
-MiraCore registers shared services through Bukkit so other Mira plugins can retrieve them with `MiraCoreProvider.require()` instead of relying on hidden static state. Core currently provides a service registry, cooldown service, the suite-wide message/prefix service, module registration and health state, persistent player profiles, notifications, audit history, pagination helpers, permission diagnostics and persistent milestone/achievement support, shared BossBar presentation, maintenance authority, safe report-only release checking, and the persistent suite-wide reward queue/claim-code service.
+MiraCore registers shared services through Bukkit so other Mira plugins can retrieve suite functionality without hidden static coupling.
 
-The module registry lets plugins report whether they are healthy or degraded, while the audit and diagnostics commands give administrators one place to inspect suite behaviour. MiraCore is also the source of the shared `&5&lMira &8>> &r` chat prefix for plugins that use Core messaging.
+Current responsibilities include:
 
-## Commands
+- shared `Mira >>` messaging and presentation
+- module registration and health state
+- shared cooldown service
+- persistent player profiles
+- audit history and diagnostics
+- notifications and pagination helpers
+- BossBar presentation
+- maintenance scheduling and server-list MOTD authority
+- report-only Mira release checking
+- persistent reward queue and claim codes
+- first-join starter workflow and `/guides`
+- server-wide consumable cooldowns
+- EssentialsX presentation/message synchronization
+- server join-message ownership
+- paid `/fix hand` and `/fix all` repair flows
 
-| Command | Permission | What it does |
-| --- | --- | --- |
-| `/miracore status` | `miracore.admin` | Shows registered Mira modules and their current health/status. |
-| `/miracore test` | `miracore.admin` | Runs MiraCore diagnostics/self-tests. |
-| `/miracore why <player> <permission>` | `miracore.admin` | Debugs whether a player has a permission and why. |
-| `/miracore audit [query]` | `miracore.admin` | Views/searches shared Mira audit history. |
-| `/miracore profiles` | `miracore.admin` | Shows shared player-profile information/statistics. |
-| `/miracore maintenance status` | `miracore.admin` | Shows maintenance state and schedules. |
-| `/miracore maintenance on [reason...]` | `miracore.admin` | Starts the configured maintenance countdown, then activates maintenance and kicks every connected player. |
-| `/miracore maintenance force [reason...]` | `miracore.admin` | Activates maintenance immediately and kicks every connected player. |
-| `/miracore maintenance off` | `miracore.admin` | Ends maintenance and reopens normal joining. |
-| `/miracore maintenance schedule <delay> [duration] [reason...]` | `miracore.admin` | Schedules a future maintenance window with countdown warnings, optional auto-reopen duration and a persisted reason. |
-| `/miracore maintenance cancel` | `miracore.admin` | Clears the scheduled maintenance window. |
-| `/miracore updates [refresh]` | `miracore.admin` | Compares installed Mira module versions with verified GitHub Releases. Never auto-downloads. |
-| `/miracore reload` | `miracore.admin` | Reloads MiraCore configuration. |
-| `/miracore help` | `miracore.admin` | Shows MiraCore command help. |
-| `/rewards` | `miracore.rewards` | Opens the player's paginated queued-reward browser and claim preview. |
-| `/claim <code>` | `miracore.rewards` | Redeems an active global claim code into the persistent reward queue. |
+## Join Message Ownership
 
-Alias: `/mcore`
+MiraCore owns the server's public join message.
 
-## Permissions
+The default format is:
 
-| Permission | Default | What it does |
-| --- | --- | --- |
-| `miracore.admin` | OP | Allows MiraCore administration, audits, diagnostics and permission debugging. |
-| `miracore.rewards` | Everyone | Allows viewing queued rewards and redeeming configured claim codes. |
+```text
+%rank% %player% Has Joined.
+```
 
-## Shared Presentation and Operations (0.3.0)
+`%rank%` uses the player's LuckPerms prefix when available and falls back to the primary group when needed. Legacy Mira MOTD join output is suppressed, and the EssentialsX custom join/new-username join messages are synchronized to empty strings so duplicate global join lines are avoided.
 
-MiraCore now exposes `BossBarService` as the suite-wide boss-bar presentation authority. Other Mira modules can create/update a player-scoped named bar without each plugin maintaining its own unrelated boss-bar implementation.
+Faction-specific member login notifications are controlled separately by MiraFactions.
 
-`MaintenanceService` owns persistent maintenance state, reasons and scheduled activation. When maintenance activates, every connected player is kicked; the bypass permission controls who may rejoin afterward. MiraCore also owns the normal server-list MOTD and maintenance MOTD override.
+## Starter Workflow and Guides
 
-`UpdateService` compares registered Mira module versions against configured GitHub repositories asynchronously. It is intentionally report-only: MiraCore does not download, replace or hot-swap plugin JARs.
+The first-join workflow is configuration driven. Server owners can configure:
 
-## Shared Reward Platform (0.4.0)
+- player and console commands on first join
+- physical guide books
+- `/guides` GUI layout
+- book names, metadata and pages
 
-MiraCore now owns the reusable `RewardService` so other Mira plugins can queue rewards without each module building its own delivery store.
+The default Mira setup includes:
+
+- Factions How To
+- Custom Enchants Guide
+- Events Guide
+
+The configured starting LuckPerms group can also be ensured access to the starter kit and guide library.
+
+## Shared Consumable Cooldowns
+
+MiraCore currently owns configurable native Paper cooldowns for:
+
+- Ender Pearls — default **3 seconds**
+- Enchanted Golden Apples — default **5 minutes**
+
+Active cooldowns use Paper's material cooldown overlay and blocked uses show the remaining time on the action bar.
+
+`miracore.cooldowns.bypass` bypasses these controls.
+
+## Repairs — v0.6.0
+
+MiraCore owns the player-facing repair flow:
+
+- `/fix hand` repairs the damaged item in the player's main hand and charges the configured repair cost.
+- `/fix all` repairs damaged inventory equipment/items, charges per damaged item and has a default 5-hour cooldown.
+- access is permission controlled so MiraItems vouchers or LuckPerms can grant the repair features permanently.
+
+Repair pricing, permissions and cooldown behaviour remain configurable.
+
+## Rewards
 
 ### `/rewards`
 
-- persistent per-player reward queue
-- paginated reward list
-- full item/command preview before claiming
+MiraCore provides a persistent per-player reward queue with:
+
+- paginated reward browsing
+- item/command preview
 - partial item delivery when only some stacks fit
-- overflow remains queued under the same reward ID
-- command rewards remain queued if dispatch fails
-- claim actions are recorded in the Core audit log
+- overflow retention under the same reward ID
+- safe command reward handling
+- audit logging
 
 ### `/claim <code>`
 
-Global claim codes are configured in `claim-codes.yml`. Codes are case-insensitive, can require a permission and/or expiry timestamp, and may queue item plus console-command rewards.
+Global claim codes are configured in `claim-codes.yml`. Codes can require permissions, expire at an absolute timestamp and queue item plus console-command rewards.
 
-A code is recorded as used once its reward has been safely queued. This prevents repeated redemption while still allowing inventory overflow to be claimed later through `/rewards`.
+## Maintenance and MOTD
 
-## Native MOTD and Maintenance Workflow (0.4.1)
+MiraCore is the suite authority for normal and maintenance server-list presentation.
 
-MiraCore now replaces the old standalone MOTD plugin as the authoritative server-list presentation layer.
+Maintenance supports:
 
-### Remove the old MOTD JAR
+- countdown activation
+- immediate force activation
+- scheduled future windows
+- optional automatic end time
+- persisted reason/start/end state
+- configurable warning thresholds
+- bypass-controlled re-entry
+- maintenance-specific MOTD lines
 
-After installing MiraCore v0.5.5, remove the old plugin JAR whose Bukkit plugin name is `MOTD` (for example the previous `Valk MOTD.jar`). Running both is unnecessary and can create competing `ServerListPingEvent` writers. MiraCore logs a warning if it detects that legacy plugin still installed.
+When maintenance activates, connected players are deliberately kicked and bypass permission controls who may reconnect afterward.
 
-### Normal MOTD
+## EssentialsX Presentation Bridge
 
-`config.yml` now supports:
+MiraCore can own EssentialsX player-facing message text while EssentialsX remains the command/functionality backend.
 
-- two normal server-list MOTD lines
-- two maintenance-specific MOTD lines
-- optional join MOTD messages
-- optional displayed maximum-player override
-- optional cached `server-icon.png` loaded from the MiraCore data folder
+The bridge:
 
-Maintenance MOTD lines support `%reason%` and `%end%` placeholders.
+- imports EssentialsX message keys
+- stores the editable MiraCore master properties file
+- preserves administrator edits
+- adds newly introduced Essentials keys safely
+- deploys the generated Essentials locale override
+- can enforce one server-wide locale
 
-### Maintenance activation
-
-`/miracore maintenance on [reason...]` starts the configured `maintenance.activation-countdown-seconds` countdown. The default is 30 seconds.
-
-Configured warning thresholds are broadcast while the countdown runs. Defaults are:
-
-`1800, 600, 300, 60, 30, 10, 5, 4, 3, 2, 1` seconds.
-
-When the countdown reaches zero:
-
-1. MiraCore persists maintenance as active.
-2. the server-list MOTD switches to the maintenance presentation.
-3. **every currently connected player is kicked, including staff/bypass users**.
-4. subsequent login attempts are denied unless the player has `miracore.maintenance.bypass`.
-
-This means bypass is deliberately a **re-entry permission**, not protection from the activation kick.
-
-### Scheduling
-
-Examples:
+Useful commands:
 
 ```text
-/miracore maintenance on Plugin updates
-/miracore maintenance schedule 10m Plugin updates
-/miracore maintenance schedule 30m 2h Database maintenance
-/miracore maintenance force Emergency maintenance
-/miracore maintenance off
+/miracore essentials
+/miracore essentials sync
 ```
 
-Maintenance reason, scheduled start and scheduled end are persisted in `maintenance.yml`. Admin-facing scheduled times are displayed in `Australia/Brisbane` time.
+## Commands
 
-Expired maintenance windows are discarded safely rather than briefly activating/kicking players during a late reload.
+| Command | Permission | Purpose |
+| --- | --- | --- |
+| `/miracore status` | `miracore.admin` | Shows registered Mira modules and health. |
+| `/miracore test` | `miracore.admin` | Runs diagnostics/self-tests. |
+| `/miracore why <player> <permission>` | `miracore.admin` | Explains a player's permission result. |
+| `/miracore audit [query]` | `miracore.admin` | Views/searches shared audit history. |
+| `/miracore profiles` | `miracore.admin` | Shows shared profile information. |
+| `/miracore maintenance ...` | `miracore.admin` | Manages maintenance mode and schedules. |
+| `/miracore updates [refresh]` | `miracore.admin` | Checks installed Mira versions against releases. |
+| `/miracore essentials [sync]` | `miracore.admin` | Shows/synchronizes the Essentials presentation bridge. |
+| `/miracore reload` | `miracore.admin` | Reloads MiraCore configuration. |
+| `/guides` | `miracore.guides` | Opens the permanent guide library. |
+| `/rewards` | `miracore.rewards` | Opens queued rewards. |
+| `/claim <code>` | `miracore.rewards` | Redeems a claim code into the reward queue. |
+| `/fix hand` | configured repair permission | Repairs the held item. |
+| `/fix all` | configured repair permission | Repairs eligible damaged items with cooldown/cost enforcement. |
 
-## Starter workflow and /guides
+Alias: `/mcore`
 
-MiraCore 0.5.3 adds a config-driven first-join starter workflow plus a permanent `/guides` library. Server owners can configure first-join player/console commands, which guide books are physically given, GUI layout, book metadata, and every page of guide text from `config.yml`.
+## Building
 
-The default Mira setup gives the starter kit command plus three guides: Factions How To, Custom Enchants Guide, and Events Guide.
+```bash
+gradle clean build
+```
 
-Release: https://github.com/FiveSOCE/Mira-core/releases/tag/v0.5.3
-SHA-256: `b16b67a46e0c9e2860bfc770d05f63031fd2620bb9617d18ff4a6d69fa901601`
+The output JAR is created in `build/libs/`.
+
+---
+
+MiraCore is intended to be the common foundation for the wider **Mira Suite**. Individual Mira modules should consume Core services where appropriate instead of creating competing global systems.

@@ -115,7 +115,7 @@ public final class CoreRewardGui {
     private ItemStack item(Material material, String name, List<Component> lore) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.customName(Component.text(name));
+        meta.displayName(Component.text(name));
         meta.lore(lore);
         item.setItemMeta(meta);
         return item;

@@ -14,10 +14,10 @@ MiraCore provides common messaging, cooldowns, service discovery, player profile
 
 | Server | Java | Build | Status |
 | --- | --- | --- | --- |
-| Paper 1.18.2 | 17 | [compat/1.18.2](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2) | Compatibility compilation and runtime verification in progress |
+| Paper 1.18.2 | 17 | [Download MiraCore-0.6.1-1.18.2.jar](https://github.com/FiveSOCE/Mira-core/releases/download/dev-1.18.2/MiraCore-0.6.1-1.18.2.jar) | Build passed; runtime validation pending |
 | Paper 1.21.11–26.2 | 21+ (server-specific) | [main](https://github.com/FiveSOCE/Mira-core) | [Existing modern release](https://github.com/FiveSOCE/Mira-core/releases/tag/v0.6.0) |
 
-Never install both JARs together. Use the JAR that targets your Paper server version. A verified direct download for 1.18.2 will be linked when its build succeeds and the asset exists.
+Never install both JARs together. Use the JAR that targets your Paper server version. The 1.18.2 JAR was verified as a published GitHub release asset after a successful Java 17 / Paper 1.18.2 CI build. The source is on [compat/1.18.2](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2). Functional parity in-game is pending verification.
 
 ## Requirements
 

@@ -79,7 +79,7 @@ public final class CoreUpdateService implements UpdateService {
         URI uri = URI.create("https://api.github.com/repos/" + repository + "/releases/latest");
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .header("Accept", "application/vnd.github+json")
-                .header("User-Agent", "MiraCore/" + plugin.getPluginMeta().getVersion())
+                .header("User-Agent", "MiraCore/" + plugin.getDescription().getVersion())
                 .timeout(Duration.ofSeconds(Math.max(2, plugin.getConfig().getInt("updater.timeout-seconds", 8))))
                 .GET().build();
 

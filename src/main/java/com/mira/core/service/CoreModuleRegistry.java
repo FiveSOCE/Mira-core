@@ -82,7 +82,7 @@ public final class CoreModuleRegistry implements ModuleRegistry {
         return new ModuleSnapshot(
                 plugin.getName(),
                 entry.displayName(),
-                plugin.getPluginMeta().getVersion(),
+                plugin.getDescription().getVersion(),
                 entry.health(),
                 entry.detail(),
                 plugin.isEnabled()

@@ -6,9 +6,18 @@ MiraCore provides common messaging, cooldowns, service discovery, player profile
 
 ## Current Release
 
-**v0.6.0** — compatible with Paper/Minecraft **1.21.11 through 26.2** using Java 21 bytecode.
+**Modern build:** v0.6.0 for Paper **1.21.11–26.2** (Java 21 baseline; newer servers may require newer Java). **Legacy compatibility branch:** v0.6.1-1.18.2 under active development for **Paper 1.18.2 / Java 17**. Both aim to preserve the same MiraCore feature set.
 
 [View releases](https://github.com/FiveSOCE/Mira-core/releases)
+
+## Version-specific builds
+
+| Server | Java | Build | Status |
+| --- | --- | --- | --- |
+| Paper 1.18.2 | 17 | [compat/1.18.2](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2) | Compatibility compilation and runtime verification in progress |
+| Paper 1.21.11–26.2 | 21+ (server-specific) | [main](https://github.com/FiveSOCE/Mira-core) | [Existing modern release](https://github.com/FiveSOCE/Mira-core/releases/tag/v0.6.0) |
+
+Never install both JARs together. Use the JAR that targets your Paper server version. A verified direct download for 1.18.2 will be linked when its build succeeds and the asset exists.
 
 ## Requirements
 

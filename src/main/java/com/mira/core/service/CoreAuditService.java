@@ -72,7 +72,7 @@ public final class CoreAuditService implements AuditService {
         if (root == null || root.getKeys(false).size() <= max) return;
         List<String> ids = new ArrayList<>(root.getKeys(false));
         ids.sort(Comparator.comparingLong(id -> yaml.getLong("entries." + id + ".time", 0L)));
-        while (ids.size() > max) yaml.set("entries." + ids.removeFirst(), null);
+        while (ids.size() > max) yaml.set("entries." + ids.remove(0), null);
     }
 
     private void save() {

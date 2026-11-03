@@ -62,7 +62,7 @@ public final class MiraCorePlugin extends JavaPlugin {
         fixService = new CoreFixService(this, messageService);
         playerJoinService = new CorePlayerJoinService(this);
 
-        api = new MiraCoreApiImpl(getPluginMeta().getVersion(), messageService, serviceRegistry, cooldownService, moduleRegistry,
+        api = new MiraCoreApiImpl(getDescription().getVersion(), messageService, serviceRegistry, cooldownService, moduleRegistry,
                 profileService, notificationService, auditService, paginationService, permissionDebugService, milestoneService,
                 bossBarService, maintenanceService, updateService, rewardService);
         CoreDiagnostics diagnostics = new CoreDiagnostics(this, api, serviceRegistry, cooldownService, moduleRegistry);

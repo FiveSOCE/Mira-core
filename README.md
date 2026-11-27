@@ -4,11 +4,11 @@ MiraCore provides the Mira ecosystem's shared messaging, services, player profil
 
 ## Download
 
-**Paper 1.18.2:** [MiraCore_1.18.2.jar](https://github.com/FiveSOCE/Mira-core/releases/tag/dev-1.18.2)
+**Paper 1.18.2:** [Legacy release page (check for a verified asset)](https://github.com/FiveSOCE/Mira-core/releases/tag/dev-1.18.2)
 
 **Modern Paper 1.21.11–26.2:** [MiraCore_1.21.11-26.2.jar](https://github.com/FiveSOCE/Mira-core/releases/tag/compat-modern-1.21.11-26.2)
 
-Use the version for your server. The legacy build compiles with Java 17 and Paper API 1.18.2; feature parity in a running server still needs validation. Other intermediate Paper versions (1.19–1.21.10) have not been certified.
+Use the version for your server. The legacy source targets Java 17 and Paper API 1.18.2; successful compilation and feature parity in a running server still need verification. Other intermediate Paper versions (1.19–1.21.10) have not been certified.
 
 ## Dependencies
 

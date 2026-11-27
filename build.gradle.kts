@@ -36,7 +36,7 @@ tasks.test {
 }
 
 tasks.jar {
-    archiveBaseName.set("MiraCore")
+    archiveFileName.set("MiraCore_1.18.2.jar")
 }
 
 tasks.processResources {

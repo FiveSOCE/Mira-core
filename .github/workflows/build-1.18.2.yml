@@ -22,7 +22,7 @@ jobs:
       - name: Verify distributable JAR
         run: |
           set -euo pipefail
-          JAR=build/libs/MiraCore-0.6.1-1.18.2.jar
+          JAR=build/libs/MiraCore_1.18.2.jar
           test -s "$JAR"
           jar tf "$JAR" | grep -Fx plugin.yml
           jar tf "$JAR" | grep -Fx com/mira/core/MiraCorePlugin.class
@@ -30,12 +30,12 @@ jobs:
           unzip -p "$JAR" plugin.yml | grep -F "api-version: '1.18'"
       - uses: actions/upload-artifact@v4
         with:
-          name: MiraCore-1.18.2
-          path: build/libs/MiraCore-0.6.1-1.18.2.jar
+          name: MiraCore_1.18.2
+          path: build/libs/MiraCore_1.18.2.jar
           if-no-files-found: error
       - name: Publish legacy prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view dev-1.18.2 >/dev/null 2>&1 || gh release create dev-1.18.2 --prerelease --title 'MiraCore for Paper 1.18.2' --notes 'Java 17 / Paper 1.18.2 compatibility edition; same MiraCore source features, API compatibility changes. Verify plugin runtime in a staging server.' --target "$GITHUB_SHA"
-          gh release upload dev-1.18.2 build/libs/MiraCore-0.6.1-1.18.2.jar --clobber
+          gh release upload dev-1.18.2 build/libs/MiraCore_1.18.2.jar --clobber

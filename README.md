@@ -1,23 +1,55 @@
-# MiraCore
+# MiraCore — Paper 1.18.2 / Java 17
 
-Shared infrastructure and presentation authority for the Mira Paper server suite.
+MiraCore provides the Mira ecosystem's shared messaging, services, player profiles, rewards, maintenance, starter guides, repairs, cooldowns, auditing and server presentation.
 
-MiraCore provides common messaging, cooldowns, service discovery, player profiles, notifications, audit history, diagnostics, maintenance controls, rewards, starter guides and shared presentation services so individual Mira plugins do not need to duplicate the same foundation.
+## Download
 
-## Current Release
+**Paper 1.18.2:** [MiraCore_1.18.2.jar](https://github.com/FiveSOCE/Mira-core/releases/tag/dev-1.18.2)
 
-**v0.6.1-1.18.2 (development)** — compatibility port targeting Paper **1.18.2** and Java **17**, retaining the modern branch's Core services and configuration. Compilation and in-game validation are required before claiming full parity.
+**Modern Paper 1.21.11–26.2:** [MiraCore_1.21.11-26.2.jar](https://github.com/FiveSOCE/Mira-core/releases/tag/compat-modern-1.21.11-26.2)
 
-[View releases](https://github.com/FiveSOCE/Mira-core/releases)
+Use the version for your server. The legacy build compiles with Java 17 and Paper API 1.18.2; feature parity in a running server still needs validation. Other intermediate Paper versions (1.19–1.21.10) have not been certified.
 
-The modern versions remain maintained separately on the [main branch](https://github.com/FiveSOCE/Mira-core). The legacy CI build is on [compat/1.18.2](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2).
+## Dependencies
 
-## Requirements
+- **Required:** Paper 1.18.2 and Java 17.
+- **Other Mira plugins:** None required.
+- **Optional:** LuckPerms for prefixes/permissions; EssentialsX for configurable message synchronisation and paid repairs using its economy.
+- **Install:** Back up `plugins/MiraCore/`; remove any old MiraCore JAR; install **only** `MiraCore_1.18.2.jar` and restart.
 
-- Paper 1.18.2
-- Java 17
-- LuckPerms optional/recommended for rank-aware join formatting and managed permission grants
-- EssentialsX optional integration for centrally managed command presentation
+## Commands
+
+| Command | Permission | Function |
+| --- | --- | --- |
+| `/miracore status` | `miracore.admin` | Service and module status |
+| `/miracore test` | `miracore.admin` | Diagnostics |
+| `/miracore why <player> <permission>` | `miracore.admin` | Permission debugging |
+| `/miracore audit [query]` | `miracore.admin` | Audit entries |
+| `/miracore profiles` | `miracore.admin` | Player profile info |
+| `/miracore maintenance ...` | `miracore.admin` | Maintenance mode |
+| `/miracore updates [refresh]` | `miracore.admin` | Read-only update checker |
+| `/miracore essentials [sync]` | `miracore.admin` | EssentialsX presentation sync |
+| `/miracore reload` | `miracore.admin` | Reload config |
+| `/guides` | `miracore.guides` | Guide GUI |
+| `/rewards` | `miracore.rewards` | Reward queue |
+| `/claim <code>` | `miracore.rewards` | Claim code redemption |
+| `/fix hand` | `miracore.fix.hand` | Paid repair |
+| `/fix all` | `miracore.fix.all` | Paid inventory repair |
+
+Alias: `/mcore` for `/miracore`.
+
+## Permissions
+
+| Permission | Default | Function |
+| --- | --- | --- |
+| `miracore.admin` | OP | Administrator commands |
+| `miracore.maintenance.bypass` | OP | Rejoin in maintenance |
+| `miracore.guides` | All | View guides |
+| `miracore.rewards` | All | Rewards and claims |
+| `miracore.fix.hand` | OP | Held-item repair |
+| `miracore.fix.all` | OP | Inventory repair |
+| `miracore.fix.cooldown.bypass` | OP | Ignore repair cooldown |
+| `miracore.cooldowns.bypass` | OP | Bypass consumable cooldowns |
 
 ## Core Services
 

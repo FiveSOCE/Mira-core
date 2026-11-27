@@ -1,30 +1,61 @@
 # MiraCore
 
-Shared infrastructure and presentation authority for the Mira Paper server suite.
+MiraCore is the shared infrastructure and server-presentation foundation for the **Mira Minecraft plugin ecosystem**. It provides messaging, registered service APIs, player profiles, cooldowns, audit logs, diagnostics, maintenance, rewards, starter kits/guides, join-message ownership, paid repairs and an optional EssentialsX presentation bridge.
 
-MiraCore provides common messaging, cooldowns, service discovery, player profiles, notifications, audit history, diagnostics, maintenance controls, rewards, starter guides and shared presentation services so individual Mira plugins do not need to duplicate the same foundation.
+## Download the correct server version
 
-## Current Release
-
-**Modern build:** v0.6.0 for Paper **1.21.11–26.2** (Java 21 baseline; newer servers may require newer Java). **Legacy compatibility branch:** v0.6.1-1.18.2 under active development for **Paper 1.18.2 / Java 17**. Both aim to preserve the same MiraCore feature set.
-
-[View releases](https://github.com/FiveSOCE/Mira-core/releases)
-
-## Version-specific builds
-
-| Server | Java | Build | Status |
+| Server target | Java | JAR | Build |
 | --- | --- | --- | --- |
-| Paper 1.18.2 | 17 | [Download MiraCore-0.6.1-1.18.2.jar](https://github.com/FiveSOCE/Mira-core/releases/download/dev-1.18.2/MiraCore-0.6.1-1.18.2.jar) | Build passed; runtime validation pending |
-| Paper 1.21.11–26.2 | 21+ (server-specific) | [main](https://github.com/FiveSOCE/Mira-core) | [Existing modern release](https://github.com/FiveSOCE/Mira-core/releases/tag/v0.6.0) |
+| **Paper 1.18.2** | Java 17 | `MiraCore_1.18.2.jar` | [Legacy downloads](https://github.com/FiveSOCE/Mira-core/releases/tag/dev-1.18.2) |
+| **Paper 1.21.11–26.2** | Java 21 baseline; server may require Java 25 | `MiraCore_1.21.11-26.2.jar` | [Modern downloads](https://github.com/FiveSOCE/Mira-core/releases/tag/compat-modern-1.21.11-26.2) |
 
-Never install both JARs together. Use the JAR that targets your Paper server version. The 1.18.2 JAR was verified as a published GitHub release asset after a successful Java 17 / Paper 1.18.2 CI build. The source is on [compat/1.18.2](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2). Functional parity in-game is pending verification.
+**Important:** The modern binary currently targets Paper 1.21.11 as its lowest compiled API, with a 26.2 compile check. **Paper 1.19–1.21.10 are not yet certified.** The legacy build is compiled for Java 17 / Paper 1.18.2. Compilation is not equivalent to full runtime feature-parity testing.
 
-## Requirements
+Install **one** MiraCore JAR in `plugins/`, not both. Remove older MiraCore JARs before restarting. Back up `plugins/MiraCore/` before changing versions.
 
-- Paper 1.21.11 through 26.2
-- Java 21
-- LuckPerms optional/recommended for rank-aware join formatting and managed permission grants
-- EssentialsX optional integration for centrally managed command presentation
+[Legacy source](https://github.com/FiveSOCE/Mira-core/tree/compat/1.18.2) · [Modern source](https://github.com/FiveSOCE/Mira-core/tree/main) · [All releases](https://github.com/FiveSOCE/Mira-core/releases)
+
+## Dependencies and integrations
+
+- **Required:** Paper matching the chosen version; correct Java runtime.
+- **Required Mira plugins:** None. MiraCore is the shared foundation; it does not require another Mira plugin.
+- **Optional:** LuckPerms for join prefixes and starter-group permission provisioning.
+- **Optional:** EssentialsX for locale/message synchronisation and the paid repair economy. Repairs needing economy payment require a functioning EssentialsX economy.
+- **Other Mira plugins:** Many declare `depend: [MiraCore]` and will not load if MiraCore does not load first.
+
+## Commands and permissions
+
+| Command | Permission | Function |
+| --- | --- | --- |
+| `/miracore status` (alias `/mcore`) | `miracore.admin` | Suite module status |
+| `/miracore test` | `miracore.admin` | Diagnostic checks |
+| `/miracore why <player> <permission>` | `miracore.admin` | Permission investigation |
+| `/miracore audit [query]` | `miracore.admin` | Audit history |
+| `/miracore profiles` | `miracore.admin` | Player profile information |
+| `/miracore maintenance ...` | `miracore.admin` | Schedule or manage maintenance |
+| `/miracore updates [refresh]` | `miracore.admin` | Report-only release checker |
+| `/miracore essentials [sync]` | `miracore.admin` | EssentialsX presentation settings |
+| `/miracore reload` | `miracore.admin` | Reload configuration |
+| `/guides` | `miracore.guides` | Open configurable guide library |
+| `/rewards` | `miracore.rewards` | Claim queued rewards |
+| `/claim <code>` | `miracore.rewards` | Redeem claim codes |
+| `/fix hand` | `miracore.fix.hand` | Paid held-item repair |
+| `/fix all` | `miracore.fix.all` | Paid inventory repairs and cooldown |
+
+Other permission nodes:
+
+| Node | Default | Meaning |
+| --- | --- | --- |
+| `miracore.admin` | OP | Administrative suite commands |
+| `miracore.maintenance.bypass` | OP | Join during maintenance |
+| `miracore.rewards` | Everyone | Rewards and claim codes |
+| `miracore.guides` | Everyone | Guides |
+| `miracore.fix.hand` | OP | Allow `/fix hand` |
+| `miracore.fix.all` | OP | Allow `/fix all` |
+| `miracore.fix.cooldown.bypass` | OP | Ignore the `/fix all` cooldown |
+| `miracore.cooldowns.bypass` | OP | Bypass pearl/gapple cooldown restrictions |
+
+Configurable integrations and cooldown bypass permissions may add additional access rules. Review `config.yml` for server-specific changes.
 
 ## Core Services
 
